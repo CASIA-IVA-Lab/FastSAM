@@ -66,6 +66,8 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg  --point_prompt "[[520,360],[620,300]]" --point_label "[1,0]"
 ```
 
+## Different Inference Options
+We provide various options for different purpose, details are in 
 
 ## Web demo
 
