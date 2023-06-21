@@ -24,7 +24,7 @@ def parse_args():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument('--device', type=str, default=device)
     parser.add_argument('--retina', type=bool, default=True, help='retina=True for generate high resolution masks, set to False to speed up.')
-    parser.add_argument('--withContours', type=bool, default=False, help='draw edges, ')
+    parser.add_argument('--withContours', type=bool, default=False, help='withContours=True to generate more beautiful masked images, set to False to speed up.')
     return parser.parse_args()
 
 
