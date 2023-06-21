@@ -69,7 +69,7 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 
 ## Web demo
 
-The [web demo](https://huggingface.co/spaces/An-619/FastSAM) can process your custom image using the Everything mode. 
+The [web demo](https://huggingface.co/spaces/An-619/FastSAM) can process your custom image using the Everything mode. (Directly using the python codes is recommended, since the web demo uses a single CPU for interance at the cost simplifying some codes on HuggingFace.)
 
 ![Web Demo](assets/web_demo.png)
 
