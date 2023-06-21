@@ -1,6 +1,6 @@
 ![](assets/logo.png)
 
-# Real-time Segment Anything
+# Fast Segment Anything
 
 [[`Paper`](arxiv/)] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
 
@@ -67,7 +67,7 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 ```
 
 ## Different Inference Options
-We provide various options for different purpose, details are in MORE_USAGES.md[MORE_USAGES.md]
+We provide various options for different purposes, details are in [MORE_USAGES.md](MORE_USAGES.md)
 
 ## Web demo
 
@@ -127,9 +127,9 @@ bbox AR@1000
 |:---------------|:-----|:------|:-----|:------|
 | ViTDet-H       | 65.0 | 53.2  | 83.3 | 91.2  |
 zero-shot transfer methods
-| sam-H E64      | 52.1 | 36.6  | 75.1 | 88.2  |
-| sam-H E32      | 50.3 | 33.1  | 76.2 | 89.8  |
-| sam-B E32      | 45.0 | 29.3  | 68.7 | 80.6  |
+| SAM-H E64      | 52.1 | 36.6  | 75.1 | 88.2  |
+| SAM-H E32      | 50.3 | 33.1  | 76.2 | 89.8  |
+| SAM-B E32      | 45.0 | 29.3  | 68.7 | 80.6  |
 | FastSAM        | 57.1 | 44.3  | 77.1 | 85.3  |
 
 #### Instance Segmentation On COCO 2017
@@ -140,9 +140,17 @@ zero-shot transfer methods
 | SAM           | .465    | .308    | .510  | .617 |
 | FastSAM       | .379    | .239    | .434  | .500 |
 
-### 4.Downstream task
+### 4. Performance Visulization
+Several segmentation results:
+#### Natural Images
+![Natural Images](assets/eightpic.png)
+#### Text to Mask 
+![Text to Mask](assets/dog_clip.png)
+
+### 5.Downstream tasks
 
 The results of several downstream tasks to show the effectiveness.
+
 
 #### Anomaly Detection
 
