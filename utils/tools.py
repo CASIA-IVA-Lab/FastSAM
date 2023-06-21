@@ -155,7 +155,7 @@ def fast_show_mask(annotation, ax, random_color=False, bbox=None, points=None, p
     weight = annotation.shape[2]
     # 将annotation 按照面积 排序
     areas = np.sum(annotation, axis=(1, 2))
-    sorted_indices = np.argsort(areas)[::-1]
+    sorted_indices = np.argsort(areas)
     annotation = annotation[sorted_indices]
 
     index = (annotation != 0).argmax(axis=0)
