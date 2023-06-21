@@ -142,7 +142,7 @@ zero-shot transfer methods
 
 ### 4.Downstream task
 
-we also do some downstream task that SAM not good at to show the effectiveness of our method.
+The results of several downstream tasks to show the effectiveness.
 
 #### Anomaly Detection
 
