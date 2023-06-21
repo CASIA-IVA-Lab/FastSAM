@@ -67,7 +67,7 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 ```
 
 ## Different Inference Options
-We provide various options for different purpose, details are in [MORE_USAGES.md](MORE_USAGES.md)
+We provide various options for different purposes, details are in [MORE_USAGES.md](MORE_USAGES.md)
 
 ## Web demo
 
