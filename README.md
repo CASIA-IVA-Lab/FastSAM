@@ -2,9 +2,8 @@
 
 # Real-time Segment Anything
 
-[[`Paper`](arxiv/)] [[`Website`](https://huggingface.co/spaces/An-619/FastSAM)] [[`App Link`](#Android-demo)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
+[[`Paper`](arxiv/)] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
 
- 
 
 ![FastSAM design](assets/Overview.png?raw=true)
 
@@ -22,7 +21,7 @@ The **Fast Segment Anything Model(FastSAM)** xxx.
 Clone the repository locally:
 
 ```
-git clone git@github.com:facebookresearch/segment-anything.git
+git clone git@github.com:CASIA-IVA-Lab/FastSAM.git
 ```
 
 Create the conda env. The code requires `python>=3.7`, as well as `pytorch>=1.7` and `torchvision>=0.8`. Please follow the instructions [here](https://pytorch.org/get-started/locally/) to install both PyTorch and TorchVision dependencies. Installing both PyTorch and TorchVision with CUDA support is strongly recommended.
@@ -71,53 +70,44 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg  --point_prompt "[[520,360],[620,300]]" --point_label "[1,0]"
 ```
 
-## Demo to try
 
-### Android demo
- 
-(可以补充FPS)
+## Web demo
 
-Please download the [fastsam.apk](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth), and install it on your android mobile phone. Below is a simple tutorial on how to use it.
+The [web demo](https://huggingface.co/spaces/An-619/FastSAM) can process your custom image using the Everything mode. 
 
-放一张使用gif图
-
-(可以补充未来扩展,onnx,视频,point,box)
-
-### Web demo
-
-The [web demo](https://huggingface.co/spaces/An-619/FastSAM) can upload your custom image, and support the similar interface modes like SAM, such as Hover & Click, Box and Everything. 
+![Web Demo](assets/web_demo.png)
 
 ## <a name="Models"></a>Model Checkpoints
 
 Two model versions of the model are available with different sizes. Click the links below to download the checkpoint for the corresponding model type.
 
-- **`default` or `FastSAM-x`: [YOLOv8x Segment Anything model.](https://drive.google.com/file/d/1m1sjY4ihXBU1fZXdQ-Xdj-mDltW-2Rqv/view?usp=sharing)**
-- `FastSAM-s`: [YOLOv8s Segment Anything model.](https://drive.google.com/file/d/10XmSj6mmpmRb8NhXbtiuO9cTTBwR_9SV/view?usp=sharing)
+- **`default` or `FastSAM`: [YOLOv8x based Segment Anything Model.](https://drive.google.com/file/d/1m1sjY4ihXBU1fZXdQ-Xdj-mDltW-2Rqv/view?usp=sharing)**
+- `FastSAM-s`: [YOLOv8s based Segment Anything Model.](https://drive.google.com/file/d/10XmSj6mmpmRb8NhXbtiuO9cTTBwR_9SV/view?usp=sharing)
 
 ## Results
 
-All result were tested on a single NVIDIA GwDForce RTX 3090
+All result were tested on a single NVIDIA GeForce RTX 3090.
 
 ### 1. Inference time
 Running Speed under Different Point Prompt Numbers(ms)
 | method           | params | 1   | 10  | 100 | E(16x16) | E(32x32*) | E(64x64) |
 |------------------|--------|-----|-----|-----|----------|-----------|----------|
-| sam-H            | 0.6G   | 446 | 464 | 627 | 852      | 2099      | 6972     |
-| sam-B            | 136M   | 110 | 125 | 230 | 432      | 1383      | 5417     |
+| SAM-H            | 0.6G   | 446 | 464 | 627 | 852      | 2099      | 6972     |
+| SAM-B            | 136M   | 110 | 125 | 230 | 432      | 1383      | 5417     |
 | FastSAM          | 68M    | 40  |40   | 40  |  40      | 40        | 40       |
 
 ### 2. Memory usage
 
-| Dataset    | model            | GPU Memory (MB)        |
+| Dataset    | Method            | GPU Memory (MB)        |
 |:-----------|:-----------------|:-----------------------|
-| COCO 2017  | FastSAM(Yolov8X) | 2608                   |
+| COCO 2017  | FastSAM | 2608                   |
 | COCO 2017  | SAM-H            | 7060                   |
 | COCO 2017  | SAM-B            | 4670                   |
 
 ### 3. Zero-shot Transfer Experiments
 
 #### Edge Detection
-Test on the BSDB500 dataset
+Test on the BSDB500 dataset.
 |method     |    year|     ODS |     OIS |    AP |  R50 |
 |:----------|:-------|:--------|:--------|:------|:-----|
 | HED       |    2015| .788    | .808    | .840  | .923 |
@@ -180,7 +170,6 @@ The model is licensed under the [Apache 2.0 license](LICENSE).
 - [YOLACT](https://arxiv.org/abs/2112.10003) provides powerful instance segmentation method.
 - [Grounded-Segment-Anything](https://huggingface.co/spaces/yizhangliu/Grounded-Segment-Anything) provides a useful web demo template.
 
- 
 
 ## Citing FastSAM
 
