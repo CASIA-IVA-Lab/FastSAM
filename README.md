@@ -4,13 +4,12 @@
 
 [[`Paper`](arxiv/)] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
 
-
-![FastSAM design](assets/Overview.png)
+![FastSAM Speed](assets/head_fig.png)
 
 The **Fast Segment Anything Model(FastSAM)** is a CNN Segment Anything Model trained by only 2% of the SA-1B dataset published by SAM authors. The FastSAM achieve a comparable performance with
 the SAM method at **50× higher run-time speed**.
 
-![FastSAM Speed](assets/head_fig.png)
+![FastSAM design](assets/Overview.png)
 
 
 ## Installation
