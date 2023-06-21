@@ -263,10 +263,8 @@ def crop_image(annotations, image_path):
 def box_prompt(masks, bbox, target_height, target_width):
     h = masks.shape[1]
     w = masks.shape[2]
-    print(h, w)
     if h!=target_height or w!=target_width:
         bbox = [int(bbox[0] * w / target_width), int(bbox[1] * h / target_height), int(bbox[2] * w / target_width), int(bbox[3] * h / target_height)]
-    print(bbox)
     bbox[0] = round(bbox[0]) if round(bbox[0]) > 0 else 0
     bbox[1] = round(bbox[1]) if round(bbox[1]) > 0 else 0
     bbox[2] = round(bbox[2]) if round(bbox[2]) < w else w
