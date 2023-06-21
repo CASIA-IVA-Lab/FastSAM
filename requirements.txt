@@ -13,5 +13,5 @@ pandas>=1.1.4
 seaborn>=0.11.0
 
 # Ultralytics-----------------------------------
-ultralytics
+ultralytics == 8.0.120
 

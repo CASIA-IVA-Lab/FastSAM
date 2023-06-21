@@ -24,7 +24,7 @@ def parse_args():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument('--device', type=str, default=device)
     parser.add_argument('--retina', type=bool, default=True, help='text')
-    parser.add_argument('--withContours', type=bool, default=True, help='text')
+    parser.add_argument('--withContours', type=bool, default=False, help='draw edge')
     return parser.parse_args()
 
 
