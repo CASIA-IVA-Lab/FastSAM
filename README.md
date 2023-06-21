@@ -1,6 +1,6 @@
 ![](assets/logo.png)
 
-# Real-time Segment Anything
+# Fast Segment Anything
 
 [[`Paper`](arxiv/)] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
 
