@@ -140,9 +140,15 @@ zero-shot transfer methods
 | SAM           | .465    | .308    | .510  | .617 |
 | FastSAM       | .379    | .239    | .434  | .500 |
 
-### 4.Downstream task
+### 4. Performance Visulization
+Several segmentation results:
+![Natural Images](assets/)
+
+
+### 5.Downstream tasks
 
 The results of several downstream tasks to show the effectiveness.
+
 
 #### Anomaly Detection
 
