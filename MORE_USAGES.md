@@ -4,6 +4,7 @@
 
 ### Everything mode
 ```angular2html
+Use --imgsz to change different input sizes.
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg \
                     --imgsz 720 \
@@ -13,7 +14,7 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 
 
 ### Use more points
-The mask of the foreground point, labeled as 0 and represented by the yellow color, will be displayed, while the mask of the background point, labeled as 1 and indicated by the purple color, will be suppressed.
+In the following, the mask corresponding to the foreground point (on the yello dog), i.e. labeled as 0 are displayed. The mask corresponding to the background point, i.e. labeled as 1 are suppressed.
 ```angular2html
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg  \
@@ -22,8 +23,10 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 ```
 ![points prompt](assets/more_usages/more_points.png)
 ### draw mask edge
-use `--withContours True` to draw the edge of the mask,
-when `--better_quality True` is set, the edge will be more smooth
+Use `--withContours True` to draw the edge of the mask.
+
+When `--better_quality True` is set, the edge will be more smooth.
+
 ```angular2html
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg \  
@@ -34,7 +37,7 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 ```
 ![Draw Edge](assets/more_usages/draw_edge.png)
 ### use box prompt
-use `--box_prompt [x,y,w,h]` to specify the bounding box of the foreground object
+Use `--box_prompt [x,y,w,h]` to specify the bounding box of the foreground object
 ```angular2html
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg \
@@ -43,7 +46,7 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 ![box prompt](assets/more_usages/box_prompt.png)
 
 ### use text prompt
-use `--text_prompt "text"` to specify the text prompt
+Use `--text_prompt "text"` to specify the text prompt
 ```angular2html
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/cat.jpg \
