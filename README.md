@@ -4,8 +4,7 @@
 
 [[`Paper`](arxiv/)] [[`Website`](https://huggingface.co/spaces/An-619/FastSAM)] [[`App Link`](#Android-demo)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
 
-
-Xu Zhao, Wenchao Ding, Yongqi An, Yinglong Du, Tao Yu, Ming Tang, Jinqiao Wang
+ 
 
 ![FastSAM design](assets/Overview.png?raw=true)
 
