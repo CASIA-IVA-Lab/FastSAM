@@ -12,7 +12,7 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 
 
 
-### use more points
+### Use more points
 The mask of the foreground point, labeled as 0 and represented by the yellow color, will be displayed, while the mask of the background point, labeled as 1 and indicated by the purple color, will be suppressed.
 ```angular2html
 python Inference.py --model_path ./weights/FastSAM.pt \
