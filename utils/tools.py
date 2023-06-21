@@ -221,8 +221,6 @@ def fast_show_mask_gpu(annotation, ax, random_color=False, bbox=None, points=Non
                     [point[1] for i, point in enumerate(points) if pointlabel[i] == 1], s=20, c='y')
         plt.scatter([point[0] for i, point in enumerate(points) if pointlabel[i] == 0],
                     [point[1] for i, point in enumerate(points) if pointlabel[i] == 0], s=20, c='m')
-    if retinamask == False:
-        show_cpu = cv2.resize(show_cpu, (target_width, target_height), interpolation=cv2.INTER_NEAREST)
     ax.imshow(show_cpu)
 
 
