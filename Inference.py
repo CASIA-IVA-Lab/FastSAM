@@ -20,12 +20,15 @@ def parse_args():
     parser.add_argument('--point_prompt', type=str, default="[[0,0]]", help='[[x1,y1],[x2,y2]]')
     parser.add_argument('--point_label', type=str, default="[0]", help='[1,0] 0:background, 1:foreground')
     parser.add_argument('--box_prompt', type=str, default="[0,0,0,0]", help='[x,y,w,h]')
-    parser.add_argument('--better_quality', type=str, default=False, help='better quality use cpu')
+    parser.add_argument('--better_quality', type=str, default=False, help='better quality using morphologyEx')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument('--device', type=str, default=device, help="cuda:[0,1,2,3,4] or cpu")
     parser.add_argument('--retina', type=bool, default=True, help='use high-resolution segmentation masks')
     parser.add_argument('--withContours', type=bool, default=False, help='draw mask edge')
     return parser.parse_args()
+
+
+
 
 
 
