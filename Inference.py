@@ -23,8 +23,8 @@ def parse_args():
     parser.add_argument('--better_quality', type=str, default=False, help='better quality using morphologyEx')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument('--device', type=str, default=device, help="cuda:[0,1,2,3,4] or cpu")
-    parser.add_argument('--retina', type=bool, default=True, help='use high-resolution segmentation masks')
-    parser.add_argument('--withContours', type=bool, default=False, help='draw mask edge')
+    parser.add_argument('--retina', type=bool, default=True, help='draw high-resolution segmentation masks')
+    parser.add_argument('--withContours', type=bool, default=False, help='draw the edges of the masks')
     return parser.parse_args()
 
 
