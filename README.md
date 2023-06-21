@@ -142,8 +142,10 @@ zero-shot transfer methods
 
 ### 4. Performance Visulization
 Several segmentation results:
-![Natural Images](assets/)
-
+#### Natural Images
+![Natural Images](assets/eightpic.png)
+#### Text to Mask 
+![Text to Mask](assets/dog_clip.png)
 
 ### 5.Downstream tasks
 
