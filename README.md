@@ -121,7 +121,7 @@ Test on the BSDB500 dataset.
 | SAM-B E32                 | 11.4 | 39.6  | 59.1   | 27.3 |
 | FastSAM                   | 15.7 | 47.3  | 63.7   | 32.2 |
 
-##### lvis
+##### LVIS
 bbox AR@1000
 | method         | all  | small | med. | large |
 |:---------------|:-----|:------|:-----|:------|
