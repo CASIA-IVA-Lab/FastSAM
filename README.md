@@ -1,2 +1,0 @@
-# FastSAM
-Fast Segment Anything
