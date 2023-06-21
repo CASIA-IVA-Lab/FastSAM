@@ -155,7 +155,7 @@ def fast_show_mask(annotation, ax, random_color=False, bbox=None, points=None, p
     weight = annotation.shape[2]
     # 将annotation 按照面积 排序
     areas = np.sum(annotation, axis=(1, 2))
-    sorted_indices = np.argsort(areas)[::1]
+    sorted_indices = np.argsort(areas)[::-1]
     annotation = annotation[sorted_indices]
 
     index = (annotation != 0).argmax(axis=0)
@@ -191,7 +191,7 @@ def fast_show_mask_gpu(annotation, ax, random_color=False, bbox=None, points=Non
     height = annotation.shape[1]
     weight = annotation.shape[2]
     areas = torch.sum(annotation, dim=(1, 2))
-    sorted_indices = torch.argsort(areas, descending=False)
+    sorted_indices = torch.argsort(areas, descending=True)
     annotation = annotation[sorted_indices]
     # 找每个位置第一个非零值下标
     index = (annotation != 0).to(torch.long).argmax(dim=0)
