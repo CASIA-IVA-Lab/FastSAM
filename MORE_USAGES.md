@@ -3,8 +3,9 @@
 
 
 ### Everything mode
-```angular2html
 Use --imgsz to change different input sizes.
+
+```angular2html
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg \
                     --imgsz 720 \
