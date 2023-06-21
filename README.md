@@ -172,10 +172,10 @@ The model is licensed under the [Apache 2.0 license](LICENSE).
 If you find this project useful for your research, please consider citing the following BibTeX entry.
 
 ```
-@article{kirillov2023segany,
-  title={Segment Anyt是的发送到发送到发送的方式hing},
-  author={Kirillov, Alexander and Mintun, Eric and Ravi, Nikhila and Mao, Hanzi and Rolland, Chloe and Gustafson, Laura and Xiao, Tete and Whitehead, Spencer and Berg, Alexander C. and Lo, Wan-Yen and Doll{\'a}r, Piotr and Girshick, Ross},
-  journal={arXiv:2304.02643},
+@article{,
+  title={},
+  author={},
+  journal={arXiv:},
   year={2023}
 }
 ```
