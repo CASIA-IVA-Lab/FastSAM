@@ -175,18 +175,12 @@ The model is licensed under the [Apache 2.0 license](LICENSE).
 
 ## Acknowledgement
 
-- [Segment Anything](https://segment-anything.com/) provides the SA-1B dataset.
-- [YOLOv8](https://github.com/ultralytics/ultralytics) provides code and pre-trained models.
+- [Segment Anything](https://segment-anything.com/) provides the SA-1B dataset and the base codes.
+- [YOLOv8](https://github.com/ultralytics/ultralytics) provides codes and pre-trained models.
 - [YOLACT](https://arxiv.org/abs/2112.10003) provides powerful instance segmentation method.
 - [Grounded-Segment-Anything](https://huggingface.co/spaces/yizhangliu/Grounded-Segment-Anything) provides a useful web demo template.
 
-## Contributors
-
-Our project wouldn't be possible without the contributions of these amazing people! Thank you all for making this project better.
-
-<a href="https://github.com/IDEA-Research/Grounded-Segment-Anything/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=IDEA-Research/Grounded-Segment-Anything" />
-</a>
+ 
 
 ## Citing FastSAM
 
