@@ -18,7 +18,7 @@ def parse_args():
     parser.add_argument('--output', type=str, default='./output/', help='image save path')
     parser.add_argument('--randomcolor', type=bool, default=True, help='mask random color')
     parser.add_argument('--point_prompt', type=str, default="[[0,0]]", help='[[x1,y1],[x2,y2]]')
-    parser.add_argument('--point_label', type=str, default="[0]", help='[1,0] 0:background, 1:forground')
+    parser.add_argument('--point_label', type=str, default="[0]", help='[1,0] 0:background, 1:foreground')
     parser.add_argument('--box_prompt', type=str, default="[0,0,0,0]", help='[x,y,w,h]')
     parser.add_argument('--better_quality', type=str, default=False, help='better quality use cpu')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
