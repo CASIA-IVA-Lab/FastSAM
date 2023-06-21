@@ -159,7 +159,10 @@ def fast_show_mask(annotation, ax, random_color=False, bbox=None, points=None, p
     annotation = annotation[sorted_indices]
 
     index = (annotation != 0).argmax(axis=0)
-    color = np.random.random((msak_sum, 1, 1, 3))
+    if random_color==True:
+        color = np.random.random((msak_sum,1,1,3))
+    else:
+        color = np.ones((msak_sum,1,1,3)) * np.array([30 / 255, 144 / 255, 255 / 255])
     transparency = np.ones((msak_sum, 1, 1, 1)) * 0.6
     visual = np.concatenate([color, transparency], axis=-1)
     mask_image = np.expand_dims(annotation, -1) * visual
@@ -195,7 +198,10 @@ def fast_show_mask_gpu(annotation, ax, random_color=False, bbox=None, points=Non
     annotation = annotation[sorted_indices]
     # 找每个位置第一个非零值下标
     index = (annotation != 0).to(torch.long).argmax(dim=0)
-    color = torch.rand((msak_sum, 1, 1, 3)).to(annotation.device)
+    if random_color==True:
+        color = torch.rand((msak_sum,1,1,3)).to(annotation.device)
+    else:
+        color = torch.ones((msak_sum,1,1,3)).to(annotation.device) * torch.tensor([30 / 255, 144 / 255, 255 / 255]).to(annotation.device)
     transparency = torch.ones((msak_sum, 1, 1, 1)).to(annotation.device) * 0.6
     visual = torch.cat([color, transparency], dim=-1)
     mask_image = torch.unsqueeze(annotation, -1) * visual
@@ -254,9 +260,13 @@ def crop_image(annotations, image_path):
     return cropped_boxes, cropped_images, not_crop, filter_id, annotations
 
 
-def box_prompt(masks, bbox):
+def box_prompt(masks, bbox, target_height, target_width):
     h = masks.shape[1]
     w = masks.shape[2]
+    print(h, w)
+    if h!=target_height or w!=target_width:
+        bbox = [int(bbox[0] * w / target_width), int(bbox[1] * h / target_height), int(bbox[2] * w / target_width), int(bbox[3] * h / target_height)]
+    print(bbox)
     bbox[0] = round(bbox[0]) if round(bbox[0]) > 0 else 0
     bbox[1] = round(bbox[1]) if round(bbox[1]) > 0 else 0
     bbox[2] = round(bbox[2]) if round(bbox[2]) < w else w
@@ -275,8 +285,12 @@ def box_prompt(masks, bbox):
     return masks[max_iou_index].cpu().numpy(), max_iou_index
 
 
-def point_prompt(masks, points, pointlabel):  # numpy 处理
-    onemask = np.zeros((masks[0]['segmentation'].shape[0], masks[0]['segmentation'].shape[1]))
+def point_prompt(masks, points, pointlabel, target_height, target_width):  # numpy 处理
+    h = masks[0]['segmentation'].shape[0]
+    w = masks[0]['segmentation'].shape[1]
+    if h!=target_height or w!=target_width:
+        points = [[int(point[0] * w / target_width), int(point[1] * h / target_height)] for point in points]
+    onemask = np.zeros((h, w))
     for i, annotation in enumerate(masks):
         if type(annotation) == dict:
             mask = annotation['segmentation']

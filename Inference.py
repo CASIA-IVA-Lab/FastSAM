@@ -59,10 +59,13 @@ def main(args):
     else:
         fast_process(annotations=results[0].masks.data, args=args, mask_random_color=args.randomcolor)
 def prompt(results, args,box=None, point=None, text=None):
+    ori_img = cv2.imread(args.img_path)
+    ori_h = ori_img.shape[0]
+    ori_w = ori_img.shape[1]
     if box:
-        mask, idx = box_prompt(results[0].masks.data, convert_box_xywh_to_xyxy(args.box_prompt))
+        mask, idx = box_prompt(results[0].masks.data, convert_box_xywh_to_xyxy(args.box_prompt), ori_h, ori_w)
     elif point:
-        mask,idx = point_prompt(results, args.point_prompt, args.point_label)
+        mask,idx = point_prompt(results, args.point_prompt, args.point_label, ori_h, ori_w)
     elif text:
         mask, idx = text_prompt(results, args)
     else:
