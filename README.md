@@ -2,7 +2,7 @@
 
 # Fast Segment Anything
 
-[[`Paper`](https://arxiv.org/pdf/2306.12156.pdf)] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
+[[`Paper`](https://arxiv.org/pdf/2306.12156.pdf)] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Colab demo`](https://colab.research.google.com/drive/1oX14f6IneGGw612WgVlAiy91UHwFAvr9?usp=sharing)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
 
 ![FastSAM Speed](assets/head_fig.png)
 
@@ -57,7 +57,7 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 ```
 
 ```
-# box prompt
+# box prompt (xywh)
 python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg --box_prompt "[570,200,230,400]"
 ```
 
