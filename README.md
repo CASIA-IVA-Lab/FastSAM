@@ -184,11 +184,13 @@ The model is licensed under the [Apache 2.0 license](LICENSE).
 If you find this project useful for your research, please consider citing the following BibTeX entry.
 
 ```
-@article{,
-  title={},
-  author={},
-  journal={arXiv:},
-  year={2023}
+@misc{zhao2023fast,
+      title={Fast Segment Anything}, 
+      author={Xu Zhao and Wenchao Ding and Yongqi An and Yinglong Du and Tao Yu and Min Li and Ming Tang and Jinqiao Wang},
+      year={2023},
+      eprint={2306.12156},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
 
