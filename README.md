@@ -1,8 +1,8 @@
 ![](assets/logo.png)
 
-# Real-time Segment Anything
+# Fast Segment Anything
 
-[[`Paper`](arxiv/)] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
+[[`Paper`](https://arxiv.org/pdf/2306.12156.pdf)] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
 
 ![FastSAM Speed](assets/head_fig.png)
 
@@ -67,11 +67,13 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 ```
 
 ## Different Inference Options
-We provide various options for different purposes, details are in [MORE_USAGES.md](MORE_USAGES.md)
+We provide various options for different purposes, details are in [MORE_USAGES.md](MORE_USAGES.md).
 
 ## Web demo
 
-The [web demo](https://huggingface.co/spaces/An-619/FastSAM) can process your custom image using the Everything mode. (Directly using the python codes is recommended, since the web demo uses a single CPU for interance at the cost simplifying some codes on HuggingFace.)
+In the [web demo](https://huggingface.co/spaces/An-619/FastSAM), you can upload your own image, select input size from 512~1024, and choose whether to visualize in high quality. High quality visualization additionally shows more easily observable split edges. The web demo only supports Everything Mode now, other modes will try to support in the future.
+
+<!-- The [web demo](https://huggingface.co/spaces/An-619/FastSAM) can process your custom image using the Everything mode. -->
 
 ![Web Demo](assets/web_demo.png)
 
@@ -87,9 +89,9 @@ Two model versions of the model are available with different sizes. Click the li
 All result were tested on a single NVIDIA GeForce RTX 3090.
 
 ### 1. Inference time
-Running Speed under Different Point Prompt Numbers(ms)
+Running Speed under Different Point Prompt Numbers(ms).
 | method           | params | 1   | 10  | 100 | E(16x16) | E(32x32*) | E(64x64) |
-|------------------|--------|-----|-----|-----|----------|-----------|----------|
+|:------------------:|:--------:|:-----:|:-----:|:-----:|:----------:|:-----------:|:----------:|
 | SAM-H            | 0.6G   | 446 | 464 | 627 | 852      | 2099      | 6972     |
 | SAM-B            | 136M   | 110 | 125 | 230 | 432      | 1383      | 5417     |
 | FastSAM          | 68M    | 40  |40   | 40  |  40      | 40        | 40       |
@@ -97,7 +99,7 @@ Running Speed under Different Point Prompt Numbers(ms)
 ### 2. Memory usage
 
 | Dataset    | Method            | GPU Memory (MB)        |
-|:-----------|:-----------------|:-----------------------|
+|:-----------:|:-----------------:|:-----------------------:|
 | COCO 2017  | FastSAM | 2608                   |
 | COCO 2017  | SAM-H            | 7060                   |
 | COCO 2017  | SAM-B            | 4670                   |
@@ -107,7 +109,7 @@ Running Speed under Different Point Prompt Numbers(ms)
 #### Edge Detection
 Test on the BSDB500 dataset.
 |method     |    year|     ODS |     OIS |    AP |  R50 |
-|:----------|:-------|:--------|:--------|:------|:-----|
+|:----------:|:-------:|:--------:|:--------:|:------:|:-----:|
 | HED       |    2015| .788    | .808    | .840  | .923 |
 | SAM       |    2023| .768    | .786    | .794  | .928 |
 | FastSAM   |    2023| .750    | .790    | .793  | .903 |
@@ -115,7 +117,7 @@ Test on the BSDB500 dataset.
 #### Object Proposals
 ##### COCO
 |method                     | AR10 | AR100 | AR1000 | AUC  |
-|---------------------------|------|-------|--------|------|
+|:---------------------------:|:------:|:-------:|--------:|:------:|
 | SAM-H E64                 | 15.5 | 45.6  | 67.7   | 32.1 |
 | SAM-H E32                 | 18.5 | 49.5  | 62.5   | 33.7 |
 | SAM-B E32                 | 11.4 | 39.6  | 59.1   | 27.3 |
@@ -124,18 +126,18 @@ Test on the BSDB500 dataset.
 ##### LVIS
 bbox AR@1000
 | method         | all  | small | med. | large |
-|:---------------|:-----|:------|:-----|:------|
+|:---------------:|:-----:|:------:|:-----:|:------:|
 | ViTDet-H       | 65.0 | 53.2  | 83.3 | 91.2  |
 zero-shot transfer methods
-| sam-H E64      | 52.1 | 36.6  | 75.1 | 88.2  |
-| sam-H E32      | 50.3 | 33.1  | 76.2 | 89.8  |
-| sam-B E32      | 45.0 | 29.3  | 68.7 | 80.6  |
+| SAM-H E64      | 52.1 | 36.6  | 75.1 | 88.2  |
+| SAM-H E32      | 50.3 | 33.1  | 76.2 | 89.8  |
+| SAM-B E32      | 45.0 | 29.3  | 68.7 | 80.6  |
 | FastSAM        | 57.1 | 44.3  | 77.1 | 85.3  |
 
 #### Instance Segmentation On COCO 2017
 
 |method         |     AP  |     APS |   APM |  APL |
-|:--------------|:--------|:--------|:------|:-----|
+|:--------------:|:--------:|:--------:|:------:|:-----:|
 | ViTDet-H      | .510    | .320    | .543  | .689 |
 | SAM           | .465    | .308    | .510  | .617 |
 | FastSAM       | .379    | .239    | .434  | .500 |
@@ -182,11 +184,13 @@ The model is licensed under the [Apache 2.0 license](LICENSE).
 If you find this project useful for your research, please consider citing the following BibTeX entry.
 
 ```
-@article{,
-  title={},
-  author={},
-  journal={arXiv:},
-  year={2023}
+@misc{zhao2023fast,
+      title={Fast Segment Anything}, 
+      author={Xu Zhao and Wenchao Ding and Yongqi An and Yinglong Du and Tao Yu and Min Li and Ming Tang and Jinqiao Wang},
+      year={2023},
+      eprint={2306.12156},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
 
