@@ -137,7 +137,7 @@ def fast_process(annotations, args, mask_random_color, bbox=None, points=None, e
                 contour_all.append(contour)
         cv2.drawContours(temp, contour_all, -1, (255, 255, 255), 2)
         color = np.array([0 / 255, 0 / 255, 255 / 255, 0.8])
-        contour_mask = temp / 225 * color.reshape(1, 1, -1)
+        contour_mask = temp / 255 * color.reshape(1, 1, -1)
         plt.imshow(contour_mask)
 
     save_path = args.output
