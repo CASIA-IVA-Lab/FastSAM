@@ -11,8 +11,8 @@ import clip
 def convert_box_xywh_to_xyxy(box):
     x1 = box[0]
     y1 = box[1]
-    x2 = box[0] + box[2]
-    y2 = box[1] + box[3]
+    x2 = box[2]
+    y2 = box[3]
     return [x1, y1, x2, y2]
 
 
