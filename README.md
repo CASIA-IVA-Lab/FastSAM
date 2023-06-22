@@ -65,7 +65,7 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 # points prompt
 python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg  --point_prompt "[[520,360],[620,300]]" --point_label "[1,0]"
 ```
-You are also welcome to try our Colab demo: [FastSAM_example.ipynb](https://colab.research.google.com/drive/1oX14f6IneGGw612WgVlAiy91UHwFAvr9?usp=sharing).
+You are also welcomed to try our Colab demo: [FastSAM_example.ipynb](https://colab.research.google.com/drive/1oX14f6IneGGw612WgVlAiy91UHwFAvr9?usp=sharing).
 ## Different Inference Options
 We provide various options for different purposes, details are in [MORE_USAGES.md](MORE_USAGES.md).
 
