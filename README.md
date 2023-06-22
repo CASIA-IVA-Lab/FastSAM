@@ -2,7 +2,7 @@
 
 # Fast Segment Anything
 
-[[`Paper`](arxiv/)] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
+[[`Paper`]([arxiv/](https://arxiv.org/pdf/2306.12156.pdf))] [[`Web Demo`](https://huggingface.co/spaces/An-619/FastSAM)] [[`Model Zoo`](#model-checkpoints)]  [[`BibTeX`](#citing-fastsam)]
 
 ![FastSAM Speed](assets/head_fig.png)
 
