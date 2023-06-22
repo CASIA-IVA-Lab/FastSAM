@@ -168,11 +168,9 @@ def fast_show_mask(annotation, ax, random_color=False, bbox=None, points=None, p
     mask_image = np.expand_dims(annotation, -1) * visual
 
     show = np.zeros((height, weight, 4))
-    print(11)
     h_indices, w_indices = np.meshgrid(np.arange(height), np.arange(weight), indexing='ij')
     indices = (index[h_indices, w_indices], h_indices, w_indices, slice(None))
     # 使用向量化索引更新show的值
-    print(11)
     show[h_indices, w_indices, :] = mask_image[indices]
     if bbox is not None:
         x1, y1, x2, y2 = bbox
