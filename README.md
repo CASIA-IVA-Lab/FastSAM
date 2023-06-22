@@ -57,7 +57,7 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 ```
 
 ```
-# box prompt
+# box prompt (xywh)
 python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg --box_prompt [570,200,230,400]
 ```
 
