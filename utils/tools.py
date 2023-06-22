@@ -221,6 +221,8 @@ def fast_show_mask_gpu(annotation, ax, random_color=False, bbox=None, points=Non
                     [point[1] for i, point in enumerate(points) if pointlabel[i] == 1], s=20, c='y')
         plt.scatter([point[0] for i, point in enumerate(points) if pointlabel[i] == 0],
                     [point[1] for i, point in enumerate(points) if pointlabel[i] == 0], s=20, c='m')
+    if retinamask==False:
+        show_cpu = cv2.resize(show_cpu,(target_width,target_height),interpolation=cv2.INTER_NEAREST)
     ax.imshow(show_cpu)
 
 
@@ -240,6 +242,10 @@ def retriev(model, preprocess, elements: [Image.Image], search_text: str, device
 
 def crop_image(annotations, image_path):
     image = Image.open(image_path)
+    ori_w, ori_h = image.size
+    mask_h, mask_w = annotations[0]["segmentation"].shape
+    if ori_w != mask_w or ori_h != mask_h:
+        image = image.resize((mask_w, mask_h))
     cropped_boxes = []
     cropped_images = []
     not_crop = []
