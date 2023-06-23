@@ -166,7 +166,7 @@ def fast_process(
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     plt.axis("off")
-    plt.savefig(save_path + result_name, bbox_inches="tight", pad_inches=0.0)
+    plt.savefig(os.path.join(save_path, result_name), bbox_inches="tight", pad_inches=0.0)
 
 
 #   CPU post process
