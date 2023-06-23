@@ -186,6 +186,15 @@ The model is licensed under the [Apache 2.0 license](LICENSE).
 - [YOLACT](https://arxiv.org/abs/2112.10003) provides powerful instance segmentation method.
 - [Grounded-Segment-Anything](https://huggingface.co/spaces/yizhangliu/Grounded-Segment-Anything) provides a useful web demo template.
 
+## Contributors
+
+Our project wouldn't be possible without the contributions of these amazing people! Thank you all for making this project better.
+
+<a href="https://github.com/CASIA-IVA-Lab/FastSAM/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=CASIA-IVA-Lab/FastSAM" />
+</a>
+
+
 ## Citing FastSAM
 
 If you find this project useful for your research, please consider citing the following BibTeX entry.
