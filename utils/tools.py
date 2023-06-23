@@ -98,7 +98,7 @@ def fast_process(
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     original_h = image.shape[0]
     original_w = image.shape[1]
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(original_w/100, original_h/100))
     plt.imshow(image)
     if args.better_quality == True:
         if isinstance(annotations[0], torch.Tensor):
@@ -166,7 +166,13 @@ def fast_process(
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     plt.axis("off")
-    plt.savefig(os.path.join(save_path, result_name), bbox_inches="tight", pad_inches=0.0)
+    fig = plt.gcf()
+    plt.draw()
+    buf = fig.canvas.tostring_rgb()
+    cols, rows = fig.canvas.get_width_height()
+    img_array = np.fromstring(buf, dtype=np.uint8).reshape(rows, cols, 3)
+    cv2.imwrite(os.path.join(save_path, result_name), cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR))
+
 
 
 #   CPU post process
