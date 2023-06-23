@@ -5,7 +5,7 @@
 ### Everything mode
 Use --imgsz to change different input sizes.
 
-```angular2html
+```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg \
                     --imgsz 720 \
@@ -16,7 +16,7 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 
 ### Use more points
 In the following, the mask corresponding to the foreground point (on the yello dog), i.e. labeled as 0 are displayed. The mask corresponding to the background point, i.e. labeled as 1 are suppressed.
-```angular2html
+```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg  \
                     --point_prompt "[[520,360],[620,300],[520,300],[620,360]]" \
@@ -28,7 +28,7 @@ Use `--withContours True` to draw the edge of the mask.
 
 When `--better_quality True` is set, the edge will be more smooth.
 
-```angular2html
+```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg \  
                     --point_prompt "[[620,360]]" \
@@ -39,7 +39,7 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 ![Draw Edge](assets/more_usages/draw_edge.png)
 ### use box prompt
 Use `--box_prompt [x,y,w,h]` to specify the bounding box of the foreground object
-```angular2html
+```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg \
                     --box_prompt [570,200,230,400] \
@@ -48,7 +48,7 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 
 ### use text prompt
 Use `--text_prompt "text"` to specify the text prompt
-```angular2html
+```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/cat.jpg \
                     --text_prompt "cat" \
