@@ -168,7 +168,13 @@ def fast_process(
     plt.axis("off")
     fig = plt.gcf()
     plt.draw()
-    buf = fig.canvas.tostring_rgb()
+    
+    try:
+        buf = fig.canvas.tostring_rgb()
+    except AttributeError:
+        fig.canvas.draw()
+        buf = fig.canvas.tostring_rgb()
+    
     cols, rows = fig.canvas.get_width_height()
     img_array = np.fromstring(buf, dtype=np.uint8).reshape(rows, cols, 3)
     cv2.imwrite(os.path.join(save_path, result_name), cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR))

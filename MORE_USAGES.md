@@ -15,7 +15,7 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 
 
 ### Use more points
-In the following, the mask corresponding to the foreground point (on the yello dog), i.e. labeled as 0 are displayed. The mask corresponding to the background point, i.e. labeled as 1 are suppressed.
+p
 ```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg  \
