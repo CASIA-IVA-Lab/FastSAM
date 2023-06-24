@@ -47,22 +47,22 @@ Then, you can run the scripts to try the everything mode and three prompt modes.
 
 ```shell
 # Everything mode
-python inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg
+python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg
 ```
 
 ```shell
 # Text prompt
-python inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg  --text_prompt "the yellow dog"
+python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg  --text_prompt "the yellow dog"
 ```
 
 ```shell
 # Box prompt (xywh)
-python inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg --box_prompt "[570,200,230,400]"
+python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg --box_prompt "[570,200,230,400]"
 ```
 
 ```shell
 # Points prompt
-python inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg  --point_prompt "[[520,360],[620,300]]" --point_label "[1,0]"
+python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg  --point_prompt "[[520,360],[620,300]]" --point_label "[1,0]"
 ```
 
 You are also welcomed to try our Colab demo: [FastSAM_example.ipynb](https://colab.research.google.com/drive/1oX14f6IneGGw612WgVlAiy91UHwFAvr9?usp=sharing).
