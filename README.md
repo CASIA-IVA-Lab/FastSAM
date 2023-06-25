@@ -147,7 +147,7 @@ zero-shot transfer methods
 |   SAM    | .465 | .308 | .510 | .617 |
 | FastSAM  | .379 | .239 | .434 | .500 |
 
-### 4. Performance Visulization
+### 4. Performance Visualization
 
 Several segmentation results:
 
