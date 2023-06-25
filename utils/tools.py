@@ -188,7 +188,7 @@ def fast_show_mask(
     random_color=False,
     bbox=None,
     points=None,
-    pointlabel=None,
+    point_label=None,
     retinamask=True,
     target_height=960,
     target_width=960,
@@ -229,14 +229,14 @@ def fast_show_mask(
     # draw point
     if points is not None:
         plt.scatter(
-            [point[0] for i, point in enumerate(points) if pointlabel[i] == 1],
-            [point[1] for i, point in enumerate(points) if pointlabel[i] == 1],
+            [point[0] for i, point in enumerate(points) if point_label[i] == 1],
+            [point[1] for i, point in enumerate(points) if point_label[i] == 1],
             s=20,
             c="y",
         )
         plt.scatter(
-            [point[0] for i, point in enumerate(points) if pointlabel[i] == 0],
-            [point[1] for i, point in enumerate(points) if pointlabel[i] == 0],
+            [point[0] for i, point in enumerate(points) if point_label[i] == 0],
+            [point[1] for i, point in enumerate(points) if point_label[i] == 0],
             s=20,
             c="m",
         )
@@ -381,7 +381,7 @@ def box_prompt(masks, bbox, target_height, target_width):
     return masks[max_iou_index].cpu().numpy(), max_iou_index
 
 
-def point_prompt(masks, points, pointlabel, target_height, target_width):  # numpy 处理
+def point_prompt(masks, points, point_label, target_height, target_width):  # numpy 处理
     h = masks[0]["segmentation"].shape[0]
     w = masks[0]["segmentation"].shape[1]
     if h != target_height or w != target_width:
@@ -396,21 +396,21 @@ def point_prompt(masks, points, pointlabel, target_height, target_width):  # num
         else:
             mask = annotation
         for i, point in enumerate(points):
-            if mask[point[1], point[0]] == 1 and pointlabel[i] == 1:
+            if mask[point[1], point[0]] == 1 and point_label[i] == 1:
                 onemask += mask
-            if mask[point[1], point[0]] == 1 and pointlabel[i] == 0:
+            if mask[point[1], point[0]] == 1 and point_label[i] == 0:
                 onemask -= mask
     onemask = onemask >= 1
     return onemask, 0
 
 
-def text_prompt(annotations, args):
+def text_prompt(annotations, text, img_path,device):
     cropped_boxes, cropped_images, not_crop, filter_id, annotaions = crop_image(
-        annotations, args.img_path
+        annotations, img_path
     )
-    clip_model, preprocess = clip.load("ViT-B/32", device=args.device)
+    clip_model, preprocess = clip.load("ViT-B/32", device=device)
     scores = retriev(
-        clip_model, preprocess, cropped_boxes, args.text_prompt, device=args.device
+        clip_model, preprocess, cropped_boxes, text, device=device
     )
     max_idx = scores.argsort()
     max_idx = max_idx[-1]

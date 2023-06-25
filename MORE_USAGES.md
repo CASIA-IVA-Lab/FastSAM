@@ -18,7 +18,7 @@ python Inference.py --model_path ./weights/FastSAM.pt \
 p
 ```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
-                    --img_path ./images/dogs.jpg  \
+                    --img_path ./images/dogs.jpg \
                     --point_prompt "[[520,360],[620,300],[520,300],[620,360]]" \
                     --point_label "[1,0,1,0]"
 ```
@@ -30,19 +30,20 @@ When `--better_quality True` is set, the edge will be more smooth.
 
 ```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
-                    --img_path ./images/dogs.jpg \  
+                    --img_path ./images/dogs.jpg \
                     --point_prompt "[[620,360]]" \
                     --point_label "[1]" \
                     --withContours True \
                     --better_quality True
 ```
+
 ![Draw Edge](assets/more_usages/draw_edge.png)
 ### use box prompt
 Use `--box_prompt [x,y,w,h]` to specify the bounding box of the foreground object
 ```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg \
-                    --box_prompt [570,200,230,400] \
+                    --box_prompt [570,200,230,400]
 ```
 ![box prompt](assets/more_usages/box_prompt.png)
 

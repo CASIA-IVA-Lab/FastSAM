@@ -101,7 +101,6 @@ def main(args):
         annotations = prompt(results, args, point=True)
         # list to numpy
         annotations = np.array([annotations])
-        print(annotations.shape)
         fast_process(
             annotations=annotations,
             args=args,
@@ -133,7 +132,7 @@ def prompt(results, args, box=None, point=None, text=None):
             results, args.point_prompt, args.point_label, ori_h, ori_w
         )
     elif text:
-        mask, idx = text_prompt(results, args)
+        mask, idx = text_prompt(results, args.text_prompt, args.img_path,args.device)
     else:
         return None
     return mask
