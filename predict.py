@@ -36,6 +36,12 @@ class Predictor(BasePredictor):
         box_prompt: str = Input(default="[0,0,0,0]", description="[x,y,w,h]"),
         point_prompt: str = Input(default="[[0,0]]", description="[[x1,y1],[x2,y2]]"),
         point_label: str = Input(default="[0]", description="[1,0] 0:background, 1:foreground"),
+        withContours: bool = Input(
+            description="draw the edges of the masks", default=False
+        ),
+        better_quality: bool = Input(
+            description="better quality using morphologyEx", default=False
+        ),
     ) -> Path:
         """Run a single prediction on the model"""
 
@@ -48,7 +54,7 @@ class Predictor(BasePredictor):
 
 
         args = argparse.Namespace(
-            better_quality=False,
+            better_quality=better_quality,
             box_prompt=box_prompt,
             conf=conf,
             device=torch.device("cuda"),
@@ -62,7 +68,7 @@ class Predictor(BasePredictor):
             randomcolor=True,
             retina=retina,
             text_prompt=text_prompt,
-            withContours=False,
+            withContours=withContours,
         )
         args.point_prompt = ast.literal_eval(args.point_prompt)
         args.box_prompt = ast.literal_eval(args.box_prompt)
