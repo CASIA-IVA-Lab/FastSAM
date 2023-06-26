@@ -81,7 +81,7 @@ In the [web demo](https://huggingface.co/spaces/An-619/FastSAM), you can upload 
 
 Two model versions of the model are available with different sizes. Click the links below to download the checkpoint for the corresponding model type.
 
-- **`default` or `FastSAM`: [YOLOv8x based Segment Anything Model.](https://drive.google.com/file/d/1m1sjY4ihXBU1fZXdQ-Xdj-mDltW-2Rqv/view?usp=sharing)**
+- **`default` or `FastSAM`: [YOLOv8x based Segment Anything Model.](https://drive.google.com/file/d/1m1sjY4ihXBU1fZXdQ-Xdj-mDltW-2Rqv/view?usp=sharing) | [Baidu Drive (pwd: 0000)](https://pan.baidu.com/s/18KzBmOTENjByoWWR17zdiQ?pwd=0000)**
 - `FastSAM-s`: [YOLOv8s based Segment Anything Model.](https://drive.google.com/file/d/10XmSj6mmpmRb8NhXbtiuO9cTTBwR_9SV/view?usp=sharing)
 
 ## Results
