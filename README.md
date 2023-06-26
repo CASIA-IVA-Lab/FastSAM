@@ -83,7 +83,6 @@ We provide various options for different purposes, details are in [MORE_USAGES.m
 
 ```
 # Download the pre-trained model in "./weights/FastSAM.pt"
-pip install gradio==3.35.2
 python app_gradio.py
 ```
 
