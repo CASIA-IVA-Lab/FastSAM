@@ -1,5 +1,6 @@
 # Prediction interface for Cog ⚙️
 # https://github.com/replicate/cog/blob/main/docs/python.md
+# Thanks for chenxwh.
 
 import argparse
 import cv2
