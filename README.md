@@ -77,9 +77,25 @@ We provide various options for different purposes, details are in [MORE_USAGES.m
 
 ## Web demo
 
-In the [web demo](https://huggingface.co/spaces/An-619/FastSAM), you can upload your own image, select input size from 512~1024, and choose whether to visualize in high quality. High quality visualization additionally shows more easily observable split edges. The web demo only supports Everything Mode now, other modes will try to support in the future.
+### Gradio demo
 
-![Web Demo](assets/web_demo.png)
+- We also provide a UI for testing our method that is built with gradio. You can upload a custom image, select the mode and set the parameters, click the segment button, and get a satisfactory segmentation result. Everything mode and points mode are now supported for interaction, other modes will try to support in the future. Running the following command in a terminal will launch the demo:
+
+```
+# Download the pre-trained model in "./weights/FastSAM.pt"
+pip install gradio==3.35.2
+python app_gradio.py
+```
+
+- This demo is also hosted on [HuggingFace Space](https://huggingface.co/spaces/An-619/FastSAM).
+
+![HF_Everyhting](assets/hf_everything_mode.png) ![HF_Points](assets/hf_points_mode.png)
+
+### Replicate demo
+
+- [Replicate demo](https://replicate.com/casia-iva-lab/fastsam) has supported all modes, you can experience points/box/text mode.
+
+![Replicate-1](assets/replicate-1.png) ![Replicate-2](assets/replicate-2.png) ![Replicate-3](assets/replicate-3.png)
 
 ## <a name="Models"></a>Model Checkpoints
 
