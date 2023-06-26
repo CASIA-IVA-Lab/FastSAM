@@ -11,6 +11,9 @@ the SAM method at **50× higher run-time speed**.
 
 ![FastSAM design](assets/Overview.png)
 
+**🍇 Updates**
+- **`2023/06/26`** Support [points mode](https://huggingface.co/spaces/An-619/FastSAM) in HuggingFace Space. Better and faster interaction will come soon!
+
 ## Installation
 
 Clone the repository locally:
