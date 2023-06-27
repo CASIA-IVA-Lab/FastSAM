@@ -118,7 +118,7 @@ def fast_process(
             random_color=mask_random_color,
             bbox=bbox,
             points=points,
-            pointlabel=args.point_label,
+            point_label=args.point_label,
             retinamask=args.retina,
             target_height=original_h,
             target_width=original_w,
@@ -132,7 +132,7 @@ def fast_process(
             random_color=args.randomcolor,
             bbox=bbox,
             points=points,
-            pointlabel=args.point_label,
+            point_label=args.point_label,
             retinamask=args.retina,
             target_height=original_h,
             target_width=original_w,
@@ -254,7 +254,7 @@ def fast_show_mask_gpu(
     random_color=False,
     bbox=None,
     points=None,
-    pointlabel=None,
+    point_label=None,
     retinamask=True,
     target_height=960,
     target_width=960,
@@ -295,14 +295,14 @@ def fast_show_mask_gpu(
     # draw point
     if points is not None:
         plt.scatter(
-            [point[0] for i, point in enumerate(points) if pointlabel[i] == 1],
-            [point[1] for i, point in enumerate(points) if pointlabel[i] == 1],
+            [point[0] for i, point in enumerate(points) if point_label[i] == 1],
+            [point[1] for i, point in enumerate(points) if point_label[i] == 1],
             s=20,
             c="y",
         )
         plt.scatter(
-            [point[0] for i, point in enumerate(points) if pointlabel[i] == 0],
-            [point[1] for i, point in enumerate(points) if pointlabel[i] == 0],
+            [point[0] for i, point in enumerate(points) if point_label[i] == 0],
+            [point[1] for i, point in enumerate(points) if point_label[i] == 0],
             s=20,
             c="m",
         )
