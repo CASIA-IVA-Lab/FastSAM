@@ -99,6 +99,11 @@ def fast_process(
     original_h = image.shape[0]
     original_w = image.shape[1]
     plt.figure(figsize=(original_w/100, original_h/100))
+    # Add subplot with no margin.
+    plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
+    plt.margins(0, 0)
+    plt.gca().xaxis.set_major_locator(plt.NullLocator())
+    plt.gca().yaxis.set_major_locator(plt.NullLocator())
     plt.imshow(image)
     if args.better_quality == True:
         if isinstance(annotations[0], torch.Tensor):
