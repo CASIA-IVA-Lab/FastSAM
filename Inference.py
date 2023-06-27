@@ -76,7 +76,7 @@ def main(args):
         retina_masks=args.retina,
         iou=args.iou,
         conf=args.conf,
-        max_det=100,
+        max_det=300,
     )
     if args.box_prompt[2] != 0 and args.box_prompt[3] != 0:
         annotations = prompt(results, args, box=True)
