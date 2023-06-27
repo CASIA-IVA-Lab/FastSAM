@@ -129,10 +129,19 @@ def prompt(results, args, box=None, point=None, text=None):
         )
     elif point:
         mask, idx = point_prompt(
-            results, args.point_prompt, args.point_label, ori_h, ori_w
+            results,
+            args.point_prompt,
+            args.point_label,
+            ori_h,
+            ori_w
         )
     elif text:
-        mask, idx = text_prompt(results, args.text_prompt, args.img_path,args.device)
+        mask, idx = text_prompt(
+            results,
+            args.text_prompt,
+            args.img_path,
+            args.device
+        )
     else:
         return None
     return mask
