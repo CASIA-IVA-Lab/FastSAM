@@ -188,7 +188,7 @@ def fast_show_mask(
     random_color=False,
     bbox=None,
     points=None,
-    point_label=None,
+    pointlabel=None,
     retinamask=True,
     target_height=960,
     target_width=960,
