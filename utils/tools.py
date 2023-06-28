@@ -422,4 +422,4 @@ def text_prompt(annotations, text, img_path, device):
     max_idx = scores.argsort()
     max_idx = max_idx[-1]
     max_idx += sum(np.array(filter_id) <= int(max_idx))
-    return annotations[max_idx]["segmentation"], max_idx
+    return annotations_[max_idx]["segmentation"], max_idx
