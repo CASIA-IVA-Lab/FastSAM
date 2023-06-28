@@ -50,7 +50,7 @@ def format_results(result, filter=0):
     return annotations
 
 
-def filter_masks(annotations):  # filte the overlap mask
+def filter_masks(annotations):  # filter the overlap mask
     annotations.sort(key=lambda x: x["area"], reverse=True)
     to_remove = set()
     for i in range(0, len(annotations)):
@@ -185,8 +185,7 @@ def fast_process(
     cv2.imwrite(os.path.join(save_path, result_name), cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR))
 
 
-
-#   CPU post process
+# CPU post process
 def fast_show_mask(
     annotation,
     ax,
@@ -334,8 +333,11 @@ def retriev(
     return probs[:, 0].softmax(dim=0)
 
 
-def crop_image(annotations, image_path):
-    image = Image.open(image_path)
+def crop_image(annotations, image_like):
+    if isinstance(image_like, str):
+        image = Image.open(image_like)
+    else:
+        image = image_like
     ori_w, ori_h = image.size
     mask_h, mask_w = annotations[0]["segmentation"].shape
     if ori_w != mask_w or ori_h != mask_h:
@@ -409,8 +411,8 @@ def point_prompt(masks, points, point_label, target_height, target_width):  # nu
     return onemask, 0
 
 
-def text_prompt(annotations, text, img_path,device):
-    cropped_boxes, cropped_images, not_crop, filter_id, annotaions = crop_image(
+def text_prompt(annotations, text, img_path, device):
+    cropped_boxes, cropped_images, not_crop, filter_id, annotations_ = crop_image(
         annotations, img_path
     )
     clip_model, preprocess = clip.load("ViT-B/32", device=device)
@@ -420,4 +422,4 @@ def text_prompt(annotations, text, img_path,device):
     max_idx = scores.argsort()
     max_idx = max_idx[-1]
     max_idx += sum(np.array(filter_id) <= int(max_idx))
-    return annotaions[max_idx]["segmentation"], max_idx
+    return annotations[max_idx]["segmentation"], max_idx
