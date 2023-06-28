@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import cv2
 import torch
 import os
+import sys
 import clip
 
 
@@ -98,6 +99,8 @@ def fast_process(
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     original_h = image.shape[0]
     original_w = image.shape[1]
+    if sys.platform == "darwin":
+            plt.switch_backend("TkAgg")
     plt.figure(figsize=(original_w/100, original_h/100))
     # Add subplot with no margin.
     plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)

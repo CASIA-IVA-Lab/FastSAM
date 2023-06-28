@@ -8,7 +8,13 @@ import numpy as np
 # Load the pre-trained model
 model = YOLO('./weights/FastSAM.pt')
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = torch.device(
+    "cuda"
+    if torch.cuda.is_available()
+    else "mps"
+    if torch.backends.mps.is_available()
+    else "cpu"
+)
 
 # Description
 title = "<center><strong><font size='8'>🏃 Fast Segment Anything 🤗</font></strong></center>"
