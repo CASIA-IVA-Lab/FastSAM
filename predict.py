@@ -25,12 +25,12 @@ class Predictor(BasePredictor):
             default="FastSAM-x",
         ),
         iou: float = Input(
-            description="iou threshold for filtering the annotations", default=0.9
+            description="iou threshold for filtering the annotations", default=0.7
         ),
         text_prompt: str = Input(
-            description='use text prompt eg: "a dog"', default=None
+            description='use text prompt eg: "a black dog"', default=None
         ),
-        conf: float = Input(description="object confidence threshold", default=0.4),
+        conf: float = Input(description="object confidence threshold", default=0.25),
         retina: bool = Input(
             description="draw high-resolution segmentation masks", default=True
         ),
