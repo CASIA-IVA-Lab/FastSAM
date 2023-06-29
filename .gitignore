@@ -2,4 +2,6 @@
 *.pyo
 *.pyd
 .DS_Store
-/weights
+.idea
+weights
+gradio_cached_examples
