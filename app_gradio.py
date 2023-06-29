@@ -21,14 +21,14 @@ device = torch.device(
 title = "<center><strong><font size='8'>🏃 Fast Segment Anything 🤗</font></strong></center>"
 
 news = """ # 📖 News
+        🔥 2023/06/29: Support the text mode (Thanks for [gaoxinge](https://github.com/CASIA-IVA-Lab/FastSAM/pull/47)).
 
-        🔥 2023/06/24: Add the 'Advanced options" in Everything mode to get a more detailed adjustment.
-        
         🔥 2023/06/26: Support the points mode. (Better and faster interaction will come soon!)
-        
+
+        🔥 2023/06/24: Add the 'Advanced options" in Everything mode to get a more detailed adjustment.        
         """  
 
-description_e = """This is a demo on Github project 🏃 [Fast Segment Anything Model](https://github.com/CASIA-IVA-Lab/FastSAM).
+description_e = """This is a demo on Github project 🏃 [Fast Segment Anything Model](https://github.com/CASIA-IVA-Lab/FastSAM). Welcome to give a star ⭐️ to it.
                 
                 🎯 Upload an Image, segment it with Fast Segment Anything (Everything mode). The other modes will come soon.
                 
@@ -44,19 +44,18 @@ description_e = """This is a demo on Github project 🏃 [Fast Segment Anything 
                 
               """
 
-description_p = """This is a demo on Github project 🏃 [Fast Segment Anything Model](https://github.com/CASIA-IVA-Lab/FastSAM).
+description_p = """ # 🎯 Instructions for points mode
+                This is a demo on Github project 🏃 [Fast Segment Anything Model](https://github.com/CASIA-IVA-Lab/FastSAM). Welcome to give a star ⭐️ to it.
                 
-                🎯 Upload an Image, add points and segment it with Fast Segment Anything (Points mode).
+                1. Upload an image or choose an example.
                 
-                ⌛️ It takes about 6~ seconds to generate segment results. The concurrency_count of queue is 1, please wait for a moment when it is crowded.
+                2. Choose the point label ('Add mask' means a positive point. 'Remove' Area means a negative point that is not segmented).
                 
-                🚀 To get faster results, you can use a smaller input size and leave high_visual_quality unchecked.
+                3. Add points one by one on the image.
                 
-                📣 You can also obtain the segmentation results of any Image through this Colab: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oX14f6IneGGw612WgVlAiy91UHwFAvr9?usp=sharing)
+                4. Click the 'Segemnt with points prompt' button to get the segmentation results.
                 
-                😚 A huge thanks goes out to the @HuggingFace Team for supporting us with GPU grant.
-                
-                🏠 Check out our [Model Card 🏃](https://huggingface.co/An-619/FastSAM)
+                **5. If you get Error, click the 'Clear points' button and try again may help.**
                 
               """
 
@@ -171,6 +170,8 @@ def get_points_with_draw(image, label, evt: gr.SelectData):
     global_points.append([x, y])
     global_point_label.append(1 if label == 'Add Mask' else 0)
     
+    print(x, y, label == 'Add Mask')
+    
     # 创建一个可以在图像上绘图的对象
     draw = ImageDraw.Draw(image)
     draw.ellipse([(x - point_radius, y - point_radius), (x + point_radius, y + point_radius)], fill=point_color)
@@ -179,12 +180,14 @@ def get_points_with_draw(image, label, evt: gr.SelectData):
 
 cond_img_e = gr.Image(label="Input", value=default_example[0], type='pil')
 cond_img_p = gr.Image(label="Input with points", value=default_example[0], type='pil')
+cond_img_t = gr.Image(label="Input with text", value="examples/dogs.jpg", type='pil')
 
 segm_img_e = gr.Image(label="Segmented Image", interactive=False, type='pil')
 segm_img_p = gr.Image(label="Segmented Image with points", interactive=False, type='pil')
+segm_img_t = gr.Image(label="Segmented Image with text", interactive=False, type='pil')
 
 global_points = []
-global_point_label = []  # TODO:Clear points each image
+global_point_label = []
 
 input_size_slider = gr.components.Slider(minimum=512,
                                          maximum=1024,
@@ -234,7 +237,7 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
 
             with gr.Column():
                 with gr.Accordion("Advanced options", open=False):
-                    text_box = gr.Textbox(label="text prompt")
+                    # text_box = gr.Textbox(label="text prompt")
                     iou_threshold = gr.Slider(0.1, 0.9, 0.7, step=0.1, label='iou', info='iou threshold for filtering the annotations')
                     conf_threshold = gr.Slider(0.1, 0.9, 0.25, step=0.05, label='conf', info='object confidence threshold')
                     with gr.Row():
@@ -275,6 +278,53 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
             with gr.Column():
                 # Description
                 gr.Markdown(description_p)
+                
+    with gr.Tab("Text mode"):
+        # Images
+        with gr.Row(variant="panel"):
+            with gr.Column(scale=1):
+                cond_img_t.render()
+
+            with gr.Column(scale=1):
+                segm_img_t.render()
+
+        # Submit & Clear
+        with gr.Row():
+            with gr.Column():
+                input_size_slider_t = gr.components.Slider(minimum=512,
+                                         maximum=1024,
+                                         value=1024,
+                                         step=64,
+                                         label='Input_size',
+                                         info='Our model was trained on a size of 1024')
+                with gr.Row():
+                    with gr.Column():
+                        contour_check = gr.Checkbox(value=True, label='withContours', info='draw the edges of the masks')
+                        text_box = gr.Textbox(label="text prompt", value="a black dog")
+
+                    with gr.Column():
+                        segment_btn_t = gr.Button("Segment with text", variant='primary')
+                        clear_btn_t = gr.Button("Clear", variant="secondary")
+
+                gr.Markdown("Try some of the examples below ⬇️")
+                gr.Examples(examples=["examples/dogs.jpg"],
+                            inputs=[cond_img_e],
+                            # outputs=segm_img_e,
+                            # fn=segment_everything,
+                            # cache_examples=True,
+                            examples_per_page=4)
+
+            with gr.Column():
+                with gr.Accordion("Advanced options", open=False):
+                    iou_threshold = gr.Slider(0.1, 0.9, 0.7, step=0.1, label='iou', info='iou threshold for filtering the annotations')
+                    conf_threshold = gr.Slider(0.1, 0.9, 0.25, step=0.05, label='conf', info='object confidence threshold')
+                    with gr.Row():
+                        mor_check = gr.Checkbox(value=False, label='better_visual_quality', info='better quality using morphologyEx')
+                        with gr.Column():
+                            retina_check = gr.Checkbox(value=True, label='use_retina', info='draw high-resolution segmentation masks')
+
+                # Description
+                gr.Markdown(description_e)
         
     cond_img_p.select(get_points_with_draw, [cond_img_p, add_or_remove], cond_img_p)
 
@@ -287,19 +337,35 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
                             mor_check,
                             contour_check,
                             retina_check,
-                            text_box
                         ],
                         outputs=segm_img_e)
 
     segment_btn_p.click(segment_with_points,
                         inputs=[cond_img_p],
                         outputs=[segm_img_p, cond_img_p])
+    
+    segment_btn_t.click(segment_everything,
+                        inputs=[
+                            cond_img_t,
+                            input_size_slider_t,
+                            iou_threshold,
+                            conf_threshold,
+                            mor_check,
+                            contour_check,
+                            retina_check,
+                            text_box,
+                        ],
+                        outputs=segm_img_t)
 
     def clear():
         return None, None
     
+    def clear_text():
+        return None, None, None
+    
     clear_btn_e.click(clear, outputs=[cond_img_e, segm_img_e])
     clear_btn_p.click(clear, outputs=[cond_img_p, segm_img_p])
+    clear_btn_t.click(clear_text, outputs=[cond_img_p, segm_img_p, text_box])
 
 demo.queue()
 demo.launch()
