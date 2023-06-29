@@ -53,7 +53,7 @@ description_p = """ # 🎯 Instructions for points mode
                 
                 3. Add points one by one on the image.
                 
-                4. Click the 'Segemnt with points prompt' button to get the segmentation results.
+                4. Click the 'Segment with points prompt' button to get the segmentation results.
                 
                 **5. If you get Error, click the 'Clear points' button and try again may help.**
                 
@@ -270,8 +270,8 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
                 gr.Markdown("Try some of the examples below ⬇️")
                 gr.Examples(examples=examples,
                             inputs=[cond_img_p],
-                            outputs=segm_img_p,
-                            fn=segment_with_points,
+                            # outputs=segm_img_p,
+                            # fn=segment_with_points,
                             # cache_examples=True,
                             examples_per_page=4)
 
