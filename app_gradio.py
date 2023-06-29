@@ -1,7 +1,8 @@
 from ultralytics import YOLO
 import gradio as gr
 import torch
-from utils.tools_gradio import fast_process, format_results, box_prompt, point_prompt
+from utils.tools_gradio import fast_process
+from utils.tools import format_results, box_prompt, point_prompt, text_prompt
 from PIL import ImageDraw
 import numpy as np
 
@@ -75,10 +76,10 @@ def segment_everything(
     better_quality=False,
     withContours=True,
     use_retina=True,
+    text="",
     mask_random_color=True,
-    ):
+):
     input_size = int(input_size)  # 确保 imgsz 是整数
-
     # Thanks for the suggestion by hysts in HuggingFace.
     w, h = input.size
     scale = input_size / max(w, h)
@@ -92,17 +93,25 @@ def segment_everything(
                     iou=iou_threshold,
                     conf=conf_threshold,
                     imgsz=input_size,)
+
+    if len(text) > 0:
+        results = format_results(results[0], 0)
+        annotations, _ = text_prompt(results, text, input, device=device)
+        annotations = np.array([annotations])
+    else:
+        annotations = results[0].masks.data
     
-    fig = fast_process(annotations=results[0].masks.data,
-                        image=input,
-                        device=device,
-                        scale=(1024 // input_size),
-                        better_quality=better_quality,
-                        mask_random_color=mask_random_color,
-                        bbox=None,
-                        use_retina=use_retina,
-                        withContours=withContours,)
+    fig = fast_process(annotations=annotations,
+                       image=input,
+                       device=device,
+                       scale=(1024 // input_size),
+                       better_quality=better_quality,
+                       mask_random_color=mask_random_color,
+                       bbox=None,
+                       use_retina=use_retina,
+                       withContours=withContours,)
     return fig
+
 
 def segment_with_points(
     input,
@@ -111,9 +120,9 @@ def segment_with_points(
     conf_threshold=0.25,
     better_quality=False,
     withContours=True,
-    mask_random_color=True,
     use_retina=True,
-    ):    
+    mask_random_color=True,
+):
     global global_points
     global global_point_label
     
@@ -135,29 +144,30 @@ def segment_with_points(
                     imgsz=input_size,)
     
     results = format_results(results[0], 0)
-    
     annotations, _ = point_prompt(results, scaled_points, global_point_label, new_h, new_w)
     annotations = np.array([annotations])
-        
+
     fig = fast_process(annotations=annotations,
-                        image=input,
-                        device=device,
-                        scale=(1024 // input_size),
-                        better_quality=better_quality,
-                        mask_random_color=mask_random_color,
-                        bbox=None,
-                        use_retina=use_retina,
-                        withContours=withContours,)
+                       image=input,
+                       device=device,
+                       scale=(1024 // input_size),
+                       better_quality=better_quality,
+                       mask_random_color=mask_random_color,
+                       bbox=None,
+                       use_retina=use_retina,
+                       withContours=withContours,)
+
     global_points = []
     global_point_label = []
     return fig, None
 
+
 def get_points_with_draw(image, label, evt: gr.SelectData):
-    x, y = evt.index[0], evt.index[1]
-    point_radius, point_color = 15, (255, 255, 0) if label == 'Add Mask' else (255, 0, 255)
     global global_points
     global global_point_label
-    print((x, y))
+
+    x, y = evt.index[0], evt.index[1]
+    point_radius, point_color = 15, (255, 255, 0) if label == 'Add Mask' else (255, 0, 255)
     global_points.append([x, y])
     global_point_label.append(1 if label == 'Add Mask' else 0)
     
@@ -165,17 +175,7 @@ def get_points_with_draw(image, label, evt: gr.SelectData):
     draw = ImageDraw.Draw(image)
     draw.ellipse([(x - point_radius, y - point_radius), (x + point_radius, y + point_radius)], fill=point_color)
     return image
-    
 
-# input_size=1024
-# high_quality_visual=True
-# inp = 'examples/sa_192.jpg'
-# input = Image.open(inp)
-# device = 'cuda' if torch.cuda.is_available() else 'cpu'
-# input_size = int(input_size)  # 确保 imgsz 是整数
-# results = model(input, device=device, retina_masks=True, iou=0.7, conf=0.25, imgsz=input_size)
-# pil_image = fast_process(annotations=results[0].masks.data,
-#                             image=input, high_quality=high_quality_visual, device=device)
 
 cond_img_e = gr.Image(label="Input", value=default_example[0], type='pil')
 cond_img_p = gr.Image(label="Input with points", value=default_example[0], type='pil')
@@ -184,7 +184,7 @@ segm_img_e = gr.Image(label="Segmented Image", interactive=False, type='pil')
 segm_img_p = gr.Image(label="Segmented Image with points", interactive=False, type='pil')
 
 global_points = []
-global_point_label = [] # TODO:Clear points each image
+global_point_label = []  # TODO:Clear points each image
 
 input_size_slider = gr.components.Slider(minimum=512,
                                          maximum=1024,
@@ -195,14 +195,14 @@ input_size_slider = gr.components.Slider(minimum=512,
 
 with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
     with gr.Row():
-            with gr.Column(scale=1):
-                # Title
-                gr.Markdown(title)
-        
-            with gr.Column(scale=1):
-                # News
-                gr.Markdown(news)
-                
+        with gr.Column(scale=1):
+            # Title
+            gr.Markdown(title)
+
+        with gr.Column(scale=1):
+            # News
+            gr.Markdown(news)
+
     with gr.Tab("Everything mode"):
         # Images
         with gr.Row(variant="panel"):
@@ -234,13 +234,14 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
 
             with gr.Column():
                 with gr.Accordion("Advanced options", open=False):
+                    text_box = gr.Textbox(label="text prompt")
                     iou_threshold = gr.Slider(0.1, 0.9, 0.7, step=0.1, label='iou', info='iou threshold for filtering the annotations')
                     conf_threshold = gr.Slider(0.1, 0.9, 0.25, step=0.05, label='conf', info='object confidence threshold')
                     with gr.Row():
                         mor_check = gr.Checkbox(value=False, label='better_visual_quality', info='better quality using morphologyEx')
                         with gr.Column():
                             retina_check = gr.Checkbox(value=True, label='use_retina', info='draw high-resolution segmentation masks')
-                    
+
                 # Description
                 gr.Markdown(description_e)
 
@@ -278,13 +279,22 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
     cond_img_p.select(get_points_with_draw, [cond_img_p, add_or_remove], cond_img_p)
 
     segment_btn_e.click(segment_everything,
-                    inputs=[cond_img_e, input_size_slider, iou_threshold, conf_threshold, mor_check, contour_check, retina_check],
-                    outputs=segm_img_e)
-    
+                        inputs=[
+                            cond_img_e,
+                            input_size_slider,
+                            iou_threshold,
+                            conf_threshold,
+                            mor_check,
+                            contour_check,
+                            retina_check,
+                            text_box
+                        ],
+                        outputs=segm_img_e)
+
     segment_btn_p.click(segment_with_points,
-                    inputs=[cond_img_p],
-                    outputs=[segm_img_p, cond_img_p])
-    
+                        inputs=[cond_img_p],
+                        outputs=[segm_img_p, cond_img_p])
+
     def clear():
         return None, None
     
