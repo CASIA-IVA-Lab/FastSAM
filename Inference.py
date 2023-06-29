@@ -47,7 +47,13 @@ def parse_args():
         default=False,
         help="better quality using morphologyEx",
     )
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(
+        "cuda"
+        if torch.cuda.is_available()
+        else "mps"
+        if torch.backends.mps.is_available()
+        else "cpu"
+    )
     parser.add_argument(
         "--device", type=str, default=device, help="cuda:[0,1,2,3,4] or cpu"
     )

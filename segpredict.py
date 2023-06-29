@@ -1,8 +1,15 @@
 from fastsam import FastSAM, FastSAMPrompt
+import torch 
 
 model = FastSAM('./weights/FastSAM.pt')
 IMAGE_PATH = './images/dogs.jpg'
-DEVICE = 'cpu'
+DEVICE = torch.device(
+    "cuda"
+    if torch.cuda.is_available()
+    else "mps"
+    if torch.backends.mps.is_available()
+    else "cpu"
+)
 everything_results = model(
     IMAGE_PATH,
     device=DEVICE,

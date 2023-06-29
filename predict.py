@@ -53,12 +53,19 @@ class Predictor(BasePredictor):
             shutil.rmtree(out_path)
         os.makedirs(out_path, exist_ok=True)
 
-
+        device = torch.device(
+            "cuda"
+            if torch.cuda.is_available()
+            else "mps"
+            if torch.backends.mps.is_available()
+            else "cpu"
+        )
+        
         args = argparse.Namespace(
             better_quality=better_quality,
             box_prompt=box_prompt,
             conf=conf,
-            device=torch.device("cuda"),
+            device=device,
             img_path=str(input_image),
             imgsz=1024,
             iou=iou,
