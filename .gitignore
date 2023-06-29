@@ -2,3 +2,4 @@
 *.pyo
 *.pyd
 .DS_Store
+/weights
