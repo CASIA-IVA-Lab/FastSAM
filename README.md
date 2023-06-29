@@ -238,6 +238,7 @@ The model is licensed under the [Apache 2.0 license](LICENSE).
 
 Our project wouldn't be possible without the contributions of these amazing people! Thank you all for making this project better.
 
+
 <a href="https://github.com/CASIA-IVA-Lab/FastSAM/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=CASIA-IVA-Lab/FastSAM" />
 </a>
