@@ -379,6 +379,7 @@ class FastSAMPrompt:
         if h != target_height or w != target_width:
             points = [[int(point[0] * w / target_width), int(point[1] * h / target_height)] for point in points]
         onemask = np.zeros((h, w))
+        masks = sorted(masks, key=lambda x: x['area'], reverse=True)
         for i, annotation in enumerate(masks):
             if type(annotation) == dict:
                 mask = annotation['segmentation']
@@ -386,9 +387,9 @@ class FastSAMPrompt:
                 mask = annotation
             for i, point in enumerate(points):
                 if mask[point[1], point[0]] == 1 and pointlabel[i] == 1:
-                    onemask += mask
+                    onemask[mask] = 1
                 if mask[point[1], point[0]] == 1 and pointlabel[i] == 0:
-                    onemask -= mask
+                    onemask[mask] = 0
         onemask = onemask >= 1
         return np.array([onemask])
 

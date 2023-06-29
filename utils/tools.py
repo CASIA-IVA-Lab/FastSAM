@@ -400,16 +400,17 @@ def point_prompt(masks, points, point_label, target_height, target_width):  # nu
             for point in points
         ]
     onemask = np.zeros((h, w))
+    masks = sorted(masks, key=lambda x: x['area'], reverse=True)
     for i, annotation in enumerate(masks):
         if type(annotation) == dict:
-            mask = annotation["segmentation"]
+            mask = annotation['segmentation']
         else:
             mask = annotation
         for i, point in enumerate(points):
             if mask[point[1], point[0]] == 1 and point_label[i] == 1:
-                onemask += mask
+                onemask[mask] = 1
             if mask[point[1], point[0]] == 1 and point_label[i] == 0:
-                onemask -= mask
+                onemask[mask] = 0
     onemask = onemask >= 1
     return onemask, 0
 

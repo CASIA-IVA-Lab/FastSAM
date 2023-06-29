@@ -89,13 +89,17 @@ class FastSAMDecoder:
 
         return np.array([masks[max_iou_index].cpu().numpy()])
 
-    def point_prompt(self, points, pointlabel):  # numpy 处理
+    def point_prompt(self, points, pointlabel):  # numpy 
 
-        masks = self._format_results(self.image_embedding, 0)
-
+        masks = self._format_results(self.results[0], 0)
+        target_height = self.ori_img.shape[0]
+        target_width = self.ori_img.shape[1]
         h = masks[0]['segmentation'].shape[0]
         w = masks[0]['segmentation'].shape[1]
+        if h != target_height or w != target_width:
+            points = [[int(point[0] * w / target_width), int(point[1] * h / target_height)] for point in points]
         onemask = np.zeros((h, w))
+        masks = sorted(masks, key=lambda x: x['area'], reverse=True)
         for i, annotation in enumerate(masks):
             if type(annotation) == dict:
                 mask = annotation['segmentation']
@@ -103,9 +107,9 @@ class FastSAMDecoder:
                 mask = annotation
             for i, point in enumerate(points):
                 if mask[point[1], point[0]] == 1 and pointlabel[i] == 1:
-                    onemask += mask
+                    onemask[mask] = 1
                 if mask[point[1], point[0]] == 1 and pointlabel[i] == 0:
-                    onemask -= mask
+                    onemask[mask] = 0
         onemask = onemask >= 1
         return np.array([onemask])
     
