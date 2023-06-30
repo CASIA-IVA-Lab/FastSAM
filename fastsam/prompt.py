@@ -340,36 +340,41 @@ class FastSAMPrompt:
 
         return cropped_boxes, cropped_images, not_crop, filter_id, annotations
 
-    def box_prompt(self, bbox):
+    def box_prompt(self, bbox=None, bboxes=None):
 
-        assert (bbox[2] != 0 and bbox[3] != 0)
-        masks = self.results[0].masks.data
-        target_height = self.ori_img.shape[0]
-        target_width = self.ori_img.shape[1]
-        h = masks.shape[1]
-        w = masks.shape[2]
-        if h != target_height or w != target_width:
-            bbox = [
-                int(bbox[0] * w / target_width),
-                int(bbox[1] * h / target_height),
-                int(bbox[2] * w / target_width),
-                int(bbox[3] * h / target_height), ]
-        bbox[0] = round(bbox[0]) if round(bbox[0]) > 0 else 0
-        bbox[1] = round(bbox[1]) if round(bbox[1]) > 0 else 0
-        bbox[2] = round(bbox[2]) if round(bbox[2]) < w else w
-        bbox[3] = round(bbox[3]) if round(bbox[3]) < h else h
+        assert bbox or bboxes
+        if bboxes is None:
+            bboxes = [bbox]
+        max_iou_index = []
+        for bbox in bboxes:
+            assert (bbox[2] != 0 and bbox[3] != 0)
+            masks = self.results[0].masks.data
+            target_height = self.ori_img.shape[0]
+            target_width = self.ori_img.shape[1]
+            h = masks.shape[1]
+            w = masks.shape[2]
+            if h != target_height or w != target_width:
+                bbox = [
+                    int(bbox[0] * w / target_width),
+                    int(bbox[1] * h / target_height),
+                    int(bbox[2] * w / target_width),
+                    int(bbox[3] * h / target_height), ]
+            bbox[0] = round(bbox[0]) if round(bbox[0]) > 0 else 0
+            bbox[1] = round(bbox[1]) if round(bbox[1]) > 0 else 0
+            bbox[2] = round(bbox[2]) if round(bbox[2]) < w else w
+            bbox[3] = round(bbox[3]) if round(bbox[3]) < h else h
 
-        # IoUs = torch.zeros(len(masks), dtype=torch.float32)
-        bbox_area = (bbox[3] - bbox[1]) * (bbox[2] - bbox[0])
+            # IoUs = torch.zeros(len(masks), dtype=torch.float32)
+            bbox_area = (bbox[3] - bbox[1]) * (bbox[2] - bbox[0])
 
-        masks_area = torch.sum(masks[:, bbox[1]:bbox[3], bbox[0]:bbox[2]], dim=(1, 2))
-        orig_masks_area = torch.sum(masks, dim=(1, 2))
+            masks_area = torch.sum(masks[:, bbox[1]:bbox[3], bbox[0]:bbox[2]], dim=(1, 2))
+            orig_masks_area = torch.sum(masks, dim=(1, 2))
 
-        union = bbox_area + orig_masks_area - masks_area
-        IoUs = masks_area / union
-        max_iou_index = torch.argmax(IoUs)
-
-        return np.array([masks[max_iou_index].cpu().numpy()])
+            union = bbox_area + orig_masks_area - masks_area
+            IoUs = masks_area / union
+            max_iou_index.append(int(torch.argmax(IoUs)))
+            
+        return np.array(masks[max_iou_index].cpu().numpy())
 
     def point_prompt(self, points, pointlabel):  # numpy 
 
@@ -407,3 +412,4 @@ class FastSAMPrompt:
 
     def everything_prompt(self):
         return self.results[0].masks.data
+        
