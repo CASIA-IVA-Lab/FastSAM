@@ -37,7 +37,16 @@ ann = prompt_process.everything_prompt()
 # # point_label default [0] [1,0] 0:background, 1:foreground
 # ann = prompt_process.point_prompt(points=[[620, 360]], pointlabel=[1])
 
+# point prompt
+# points default [[0,0]] [[x1,y1],[x2,y2]]
+# point_label default [0] [1,0] 0:background, 1:foreground
+ann = prompt_process.point_prompt(points=[[620, 360]], pointlabel=[1])
+
 prompt_process.plot(
     annotations=ann,
     output='./output/',
+    mask_random_color=True,
+    better_quality=True,
+    retina=False,
+    withContours=True,
 )
