@@ -373,7 +373,7 @@ class FastSAMPrompt:
             union = bbox_area + orig_masks_area - masks_area
             IoUs = masks_area / union
             max_iou_index.append(int(torch.argmax(IoUs)))
-            
+        max_iou_index = list(set(max_iou_index))
         return np.array(masks[max_iou_index].cpu().numpy())
 
     def point_prompt(self, points, pointlabel):  # numpy 
