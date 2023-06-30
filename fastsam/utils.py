@@ -21,7 +21,12 @@ def adjust_bboxes_to_image_border(boxes, image_shape, threshold=20):
 
     return boxes
 
-
+def convert_box_xywh_to_xyxy(box):
+    x1 = box[0]
+    y1 = box[1]
+    x2 = box[0] + box[2]
+    y2 = box[1] + box[3]
+    return [x1, y1, x2, y2]
 
 def bbox_iou(box1, boxes, iou_thres=0.9, image_shape=(640, 640), raw_output=False):
     '''Compute the Intersection-Over-Union of a bounding box with respect to an array of other bounding boxes.

@@ -93,7 +93,7 @@ class FastSAMPrompt:
     def plot(self,
              annotations,
              output,
-             bbox=None,
+             bboxes=None,
              points=None,
              point_label=None,
              mask_random_color=True,
@@ -129,7 +129,7 @@ class FastSAMPrompt:
                 annotations,
                 plt.gca(),
                 random_color=mask_random_color,
-                bbox=bbox,
+                bboxes=bboxes,
                 points=points,
                 pointlabel=point_label,
                 retinamask=retina,
@@ -143,7 +143,7 @@ class FastSAMPrompt:
                 annotations,
                 plt.gca(),
                 random_color=mask_random_color,
-                bbox=bbox,
+                bboxes=bboxes,
                 points=points,
                 pointlabel=point_label,
                 retinamask=retina,
@@ -195,7 +195,7 @@ class FastSAMPrompt:
         annotation,
         ax,
         random_color=False,
-        bbox=None,
+        bboxes=None,
         points=None,
         pointlabel=None,
         retinamask=True,
@@ -224,9 +224,10 @@ class FastSAMPrompt:
         indices = (index[h_indices, w_indices], h_indices, w_indices, slice(None))
         # Use vectorized indexing to update the values of 'show'.
         show[h_indices, w_indices, :] = mask_image[indices]
-        if bbox is not None:
-            x1, y1, x2, y2 = bbox
-            ax.add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor='b', linewidth=1))
+        if bboxes is not None:
+            for bbox in bboxes:
+                x1, y1, x2, y2 = bbox
+                ax.add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor='b', linewidth=1))
         # draw point
         if points is not None:
             plt.scatter(
@@ -251,7 +252,7 @@ class FastSAMPrompt:
         annotation,
         ax,
         random_color=False,
-        bbox=None,
+        bboxes=None,
         points=None,
         pointlabel=None,
         retinamask=True,
@@ -281,9 +282,10 @@ class FastSAMPrompt:
         # Use vectorized indexing to update the values of 'show'.
         show[h_indices, w_indices, :] = mask_image[indices]
         show_cpu = show.cpu().numpy()
-        if bbox is not None:
-            x1, y1, x2, y2 = bbox
-            ax.add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor='b', linewidth=1))
+        if bboxes is not None:
+            for bbox in bboxes:
+                x1, y1, x2, y2 = bbox
+                ax.add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor='b', linewidth=1))
         # draw point
         if points is not None:
             plt.scatter(
