@@ -6,8 +6,8 @@
 
 ![FastSAM Speed](assets/head_fig.png)
 
-The **Fast Segment Anything Model(FastSAM)** is a CNN Segment Anything Model trained by only 2% of the SA-1B dataset published by SAM authors. The FastSAM achieve a comparable performance with
-the SAM method at **50× higher run-time speed**.
+The **Fast Segment Anything Model(FastSAM)** is a CNN Segment Anything Model trained using only 2% of the SA-1B dataset published by SAM authors. FastSAM achieves comparable performance to
+the SAM method with **50× higher run-time speed**.
 
 ![FastSAM design](assets/Overview.png)
 
@@ -109,7 +109,7 @@ We provide various options for different purposes, details are in [MORE_USAGES.m
 
 ### Gradio demo
 
-- We also provide a UI for testing our method that is built with gradio. You can upload a custom image, select the mode and set the parameters, click the segment button, and get a satisfactory segmentation result. Everything mode and points mode are now supported for interaction, other modes will try to support in the future. Running the following command in a terminal will launch the demo:
+- We also provide a UI for testing our method that is built with gradio. You can upload a custom image, select the mode and set the parameters, click the segment button, and get a satisfactory segmentation result. Currently, the UI supports interaction with the 'Everything mode' and 'points mode'. We plan to add support for additional modes in the future. Running the following command in a terminal will launch the demo:
 
 ```
 # Download the pre-trained model in "./weights/FastSAM.pt"
