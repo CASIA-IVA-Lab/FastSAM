@@ -20,7 +20,11 @@ class FastSAMPredictor(DetectionPredictor):
                                     max_det=self.args.max_det,
                                     nc=len(self.model.names),
                                     classes=self.args.classes)
-        
+
+        results = []
+        if len(p) == 0 or len(p[0]) == 0:
+            return results
+
         full_box = torch.zeros_like(p[0][0])
         full_box[2], full_box[3], full_box[4], full_box[6:] = img.shape[3], img.shape[2], 1.0, 1.0
         full_box = full_box.view(1, -1)
@@ -30,7 +34,6 @@ class FastSAMPredictor(DetectionPredictor):
             full_box[0][6:] = p[0][critical_iou_index][:,6:]
             p[0][critical_iou_index] = full_box
         
-        results = []
         proto = preds[1][-1] if len(preds[1]) == 3 else preds[1]  # second output is len 3 if pt, but only 1 if exported
         for i, pred in enumerate(p):
             orig_img = orig_imgs[i] if isinstance(orig_imgs, list) else orig_imgs
