@@ -21,11 +21,16 @@ except (ImportError, AssertionError, AttributeError):
 class FastSAMPrompt:
 
     def __init__(self, img_path, results, device='cuda') -> None:
-        # self.img_path = img_path
         self.device = device
         self.results = results
         self.img_path = img_path
-        self.ori_img = cv2.imread(img_path)
+        self.ori_img = cv2.imread(img_path) if img_path else None
+
+    @staticmethod
+    def from_np_tensor(img_tensor, results, device='cuda') -> 'FastSAMPrompt':
+        p = FastSAMPrompt(None, results, device)
+        p.ori_img = img_tensor
+        return p
 
     def _segment_image(self, image, bbox):
         image_array = np.array(image)
@@ -90,19 +95,17 @@ class FastSAMPrompt:
             w = x2 - x1
         return [x1, y1, x2, y2]
 
-    def plot(self,
+    def plot_to_result(self,
              annotations,
-             output,
              bboxes=None,
              points=None,
              point_label=None,
              mask_random_color=True,
              better_quality=True,
              retina=False,
-             withContours=True):
+             withContours=True) -> np.ndarray:
         if isinstance(annotations[0], dict):
             annotations = [annotation['segmentation'] for annotation in annotations]
-        result_name = os.path.basename(self.img_path)
         image = self.ori_img
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         original_h = image.shape[0]
@@ -173,9 +176,6 @@ class FastSAMPrompt:
             contour_mask = temp / 255 * color.reshape(1, 1, -1)
             plt.imshow(contour_mask)
 
-        save_path = output
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
         plt.axis('off')
         fig = plt.gcf()
         plt.draw()
@@ -187,8 +187,35 @@ class FastSAMPrompt:
             buf = fig.canvas.tostring_rgb()
         cols, rows = fig.canvas.get_width_height()
         img_array = np.frombuffer(buf, dtype=np.uint8).reshape(rows, cols, 3)
-        cv2.imwrite(os.path.join(save_path, result_name), cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR))
-
+        result = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+        plt.close()
+        return result
+            
+    def plot(self,
+             annotations,
+             output,
+             bboxes=None,
+             points=None,
+             point_label=None,
+             mask_random_color=True,
+             better_quality=True,
+             retina=False,
+             withContours=True):
+        result = self.plot_to_result(
+            annotations, 
+            bboxes, 
+            points, 
+            point_label, 
+            mask_random_color,
+            better_quality, 
+            retina, 
+            withContours,
+        )
+        result_name = os.path.basename(self.img_path)
+        if not os.path.exists(output):
+            os.makedirs(output)
+        cv2.imwrite(os.path.join(output, result_name), result)
+     
     #   CPU post process
     def fast_show_mask(
         self,
