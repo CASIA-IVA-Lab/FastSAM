@@ -1,6 +1,6 @@
 # Ultralytics YOLO 🚀, AGPL-3.0 license
 """
-YOLO-NAS model interface.
+FastSAM model interface.
 
 Usage - Predict:
     from ultralytics import FastSAM
@@ -52,7 +52,7 @@ class FastSAM(YOLO):
 
     def train(self, **kwargs):
         """Function trains models but raises an error as FastSAM models do not support training."""
-        raise NotImplementedError("FastSAM models don't support training")
+        raise NotImplementedError("Currently, the training codes are on the way.")
 
     def val(self, **kwargs):
         """Run validation given dataset."""
