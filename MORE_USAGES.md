@@ -43,7 +43,7 @@ Use `--box_prompt [x,y,w,h]` to specify the bounding box of the foreground objec
 ```shell
 python Inference.py --model_path ./weights/FastSAM.pt \
                     --img_path ./images/dogs.jpg \
-                    --box_prompt [570,200,230,400]
+                    --box_prompt "[[570,200,230,400]]"
 ```
 ![box prompt](assets/more_usages/box_prompt.png)
 

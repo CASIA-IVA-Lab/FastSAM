@@ -64,7 +64,7 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 
 ```shell
 # Box prompt (xywh)
-python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg --box_prompt "[570,200,230,400]"
+python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg --box_prompt "[[570,200,230,400]]"
 ```
 
 ```shell
@@ -86,7 +86,7 @@ prompt_process = FastSAMPrompt(IMAGE_PATH, everything_results, device=DEVICE)
 ann = prompt_process.everything_prompt()
 
 # bbox default shape [0,0,0,0] -> [x1,y1,x2,y2]
-ann = prompt_process.box_prompt(bbox=[200, 200, 300, 300])
+ann = prompt_process.box_prompt(bbox=[[200, 200, 300, 300]])
 
 # text prompt
 ann = prompt_process.text_prompt(text='a photo of a dog')
