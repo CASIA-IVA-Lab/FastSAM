@@ -14,10 +14,11 @@ def adjust_bboxes_to_image_border(boxes, image_shape, threshold=20):
     h, w = image_shape
 
     # Adjust boxes
-    boxes[:, 0] = torch.where(boxes[:, 0] < threshold, 0, boxes[:, 0])  # x1
-    boxes[:, 1] = torch.where(boxes[:, 1] < threshold, 0, boxes[:, 1])  # y1
-    boxes[:, 2] = torch.where(boxes[:, 2] > w - threshold, w, boxes[:, 2])  # x2
-    boxes[:, 3] = torch.where(boxes[:, 3] > h - threshold, h, boxes[:, 3])  # y2
+    boxes[:, 0] = torch.where(boxes[:, 0] < threshold, torch.tensor(0,dtype=torch.float,device=boxes.device), boxes[:, 0])  # x1
+    boxes[:, 1] = torch.where(boxes[:, 1] < threshold, torch.tensor(0,dtype=torch.float,device=boxes.device), boxes[:, 1])  # y1
+    boxes[:, 2] = torch.where(boxes[:, 2] > w - threshold, torch.tensor(w,dtype=torch.float,device=boxes.device), boxes[:, 2])  # x2
+    boxes[:, 3] = torch.where(boxes[:, 3] > h - threshold, torch.tensor(h,dtype=torch.float,device=boxes.device), boxes[:, 3])  # y2
+
 
     return boxes
 
