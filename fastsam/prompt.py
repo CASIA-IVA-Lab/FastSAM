@@ -4,8 +4,8 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from .utils import image_to_np_ndarray
 from PIL import Image
-
 
 
 try:
@@ -14,7 +14,8 @@ try:
 except (ImportError, AssertionError, AttributeError):
     from ultralytics.yolo.utils.checks import check_requirements
 
-    check_requirements('git+https://github.com/openai/CLIP.git')  # required before installing lap from source
+    # required before installing lap from source
+    check_requirements('git+https://github.com/openai/CLIP.git')
     import clip
 
 
@@ -23,16 +24,7 @@ class FastSAMPrompt:
     def __init__(self, image: str | np.ndarray | Image.Image | None, results, device='cuda') -> None:
         self.device = device
         self.results = results
-        self.img = self._read_image(image)
-    
-    def _read_image(self, image: str | np.ndarray | Image.Image | None) -> None:
-        if type(image) is str:
-            self.img = np.array(Image.open(image))
-        elif issubclass(type(image), Image.Image):
-            self.img = np.array(image)
-        elif type(image) is np.ndarray:
-            self.img = image
-        return
+        self.img = image_to_np_ndarray(image)
 
     def _segment_image(self, image: np.ndarray | Image.Image, bbox):
         image_array = np.array(image)
@@ -42,7 +34,8 @@ class FastSAMPrompt:
         segmented_image = Image.fromarray(segmented_image_array)
         black_image = Image.new('RGB', image.size, (255, 255, 255))
         # transparency_mask = np.zeros_like((), dtype=np.uint8)
-        transparency_mask = np.zeros((image_array.shape[0], image_array.shape[1]), dtype=np.uint8)
+        transparency_mask = np.zeros(
+            (image_array.shape[0], image_array.shape[1]), dtype=np.uint8)
         transparency_mask[y1:y2, x1:x2] = 255
         transparency_mask_image = Image.fromarray(transparency_mask, mode='L')
         black_image.paste(segmented_image, mask=transparency_mask_image)
@@ -82,7 +75,8 @@ class FastSAMPrompt:
 
     def _get_bbox_from_mask(self, mask):
         mask = mask.astype(np.uint8)
-        contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = cv2.findContours(
+            mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         x1, y1, w, h = cv2.boundingRect(contours[0])
         x2, y2 = x1 + w, y1 + h
         if len(contours) > 1:
@@ -98,16 +92,17 @@ class FastSAMPrompt:
         return [x1, y1, x2, y2]
 
     def plot_to_result(self,
-             annotations,
-             bboxes=None,
-             points=None,
-             point_label=None,
-             mask_random_color=True,
-             better_quality=True,
-             retina=False,
-             withContours=True) -> np.ndarray:
+                       annotations,
+                       bboxes=None,
+                       points=None,
+                       point_label=None,
+                       mask_random_color=True,
+                       better_quality=True,
+                       retina=False,
+                       withContours=True) -> np.ndarray:
         if isinstance(annotations[0], dict):
-            annotations = [annotation['segmentation'] for annotation in annotations]
+            annotations = [annotation['segmentation']
+                           for annotation in annotations]
         image = self.img
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         original_h = image.shape[0]
@@ -116,7 +111,8 @@ class FastSAMPrompt:
             plt.switch_backend("TkAgg")
         plt.figure(figsize=(original_w / 100, original_h / 100))
         # Add subplot with no margin.
-        plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
+        plt.subplots_adjust(top=1, bottom=0, right=1,
+                            left=0, hspace=0, wspace=0)
         plt.margins(0, 0)
         plt.gca().xaxis.set_major_locator(plt.NullLocator())
         plt.gca().yaxis.set_major_locator(plt.NullLocator())
@@ -126,8 +122,10 @@ class FastSAMPrompt:
             if isinstance(annotations[0], torch.Tensor):
                 annotations = np.array(annotations.cpu())
             for i, mask in enumerate(annotations):
-                mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
-                annotations[i] = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_OPEN, np.ones((8, 8), np.uint8))
+                mask = cv2.morphologyEx(mask.astype(
+                    np.uint8), cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
+                annotations[i] = cv2.morphologyEx(mask.astype(
+                    np.uint8), cv2.MORPH_OPEN, np.ones((8, 8), np.uint8))
         if self.device == 'cpu':
             annotations = np.array(annotations)
             self.fast_show_mask(
@@ -170,7 +168,8 @@ class FastSAMPrompt:
                         (original_w, original_h),
                         interpolation=cv2.INTER_NEAREST,
                     )
-                contours, hierarchy = cv2.findContours(annotation, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+                contours, hierarchy = cv2.findContours(
+                    annotation, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
                 for contour in contours:
                     contour_all.append(contour)
             cv2.drawContours(temp, contour_all, -1, (255, 255, 255), 2)
@@ -192,26 +191,26 @@ class FastSAMPrompt:
         result = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         plt.close()
         return result
-            
-    # Remark for refactoring: IMO a function should do one thing only, storing the image and plotting should be seperated and do not necessarily need to be class functions but standalone utility functions that the user can chain in his scripts to have more fine-grained control. 
+
+    # Remark for refactoring: IMO a function should do one thing only, storing the image and plotting should be seperated and do not necessarily need to be class functions but standalone utility functions that the user can chain in his scripts to have more fine-grained control.
     def plot_to_file(self,
-             annotations,
-             img_path,
-             bboxes=None,
-             points=None,
-             point_label=None,
-             mask_random_color=True,
-             better_quality=True,
-             retina=False,
-             withContours=True):
+                     annotations,
+                     img_path,
+                     bboxes=None,
+                     points=None,
+                     point_label=None,
+                     mask_random_color=True,
+                     better_quality=True,
+                     retina=False,
+                     withContours=True):
         result = self.plot_to_result(
-            annotations, 
-            bboxes, 
-            points, 
-            point_label, 
+            annotations,
+            bboxes,
+            points,
+            point_label,
             mask_random_color,
-            better_quality, 
-            retina, 
+            better_quality,
+            retina,
             withContours,
         )
 
@@ -219,7 +218,7 @@ class FastSAMPrompt:
         if not os.path.exists(path):
             os.makedirs(path)
         cv2.imwrite(img_path, result)
-     
+
     #   CPU post process
     def fast_show_mask(
         self,
@@ -236,7 +235,7 @@ class FastSAMPrompt:
         msak_sum = annotation.shape[0]
         height = annotation.shape[1]
         weight = annotation.shape[2]
-        #Sort annotations based on area.
+        # Sort annotations based on area.
         areas = np.sum(annotation, axis=(1, 2))
         sorted_indices = np.argsort(areas)
         annotation = annotation[sorted_indices]
@@ -245,37 +244,46 @@ class FastSAMPrompt:
         if random_color:
             color = np.random.random((msak_sum, 1, 1, 3))
         else:
-            color = np.ones((msak_sum, 1, 1, 3)) * np.array([30 / 255, 144 / 255, 255 / 255])
+            color = np.ones((msak_sum, 1, 1, 3)) * \
+                np.array([30 / 255, 144 / 255, 255 / 255])
         transparency = np.ones((msak_sum, 1, 1, 1)) * 0.6
         visual = np.concatenate([color, transparency], axis=-1)
         mask_image = np.expand_dims(annotation, -1) * visual
 
         show = np.zeros((height, weight, 4))
-        h_indices, w_indices = np.meshgrid(np.arange(height), np.arange(weight), indexing='ij')
-        indices = (index[h_indices, w_indices], h_indices, w_indices, slice(None))
+        h_indices, w_indices = np.meshgrid(
+            np.arange(height), np.arange(weight), indexing='ij')
+        indices = (index[h_indices, w_indices],
+                   h_indices, w_indices, slice(None))
         # Use vectorized indexing to update the values of 'show'.
         show[h_indices, w_indices, :] = mask_image[indices]
         if bboxes is not None:
             for bbox in bboxes:
                 x1, y1, x2, y2 = bbox
-                ax.add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor='b', linewidth=1))
+                ax.add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 -
+                             y1, fill=False, edgecolor='b', linewidth=1))
         # draw point
         if points is not None:
             plt.scatter(
-                [point[0] for i, point in enumerate(points) if pointlabel[i] == 1],
-                [point[1] for i, point in enumerate(points) if pointlabel[i] == 1],
+                [point[0] for i, point in enumerate(
+                    points) if pointlabel[i] == 1],
+                [point[1] for i, point in enumerate(
+                    points) if pointlabel[i] == 1],
                 s=20,
                 c='y',
             )
             plt.scatter(
-                [point[0] for i, point in enumerate(points) if pointlabel[i] == 0],
-                [point[1] for i, point in enumerate(points) if pointlabel[i] == 0],
+                [point[0] for i, point in enumerate(
+                    points) if pointlabel[i] == 0],
+                [point[1] for i, point in enumerate(
+                    points) if pointlabel[i] == 0],
                 s=20,
                 c='m',
             )
 
         if not retinamask:
-            show = cv2.resize(show, (target_width, target_height), interpolation=cv2.INTER_NEAREST)
+            show = cv2.resize(show, (target_width, target_height),
+                              interpolation=cv2.INTER_NEAREST)
         ax.imshow(show)
 
     def fast_show_mask_gpu(
@@ -303,42 +311,52 @@ class FastSAMPrompt:
         else:
             color = torch.ones((msak_sum, 1, 1, 3)).to(annotation.device) * torch.tensor([
                 30 / 255, 144 / 255, 255 / 255]).to(annotation.device)
-        transparency = torch.ones((msak_sum, 1, 1, 1)).to(annotation.device) * 0.6
+        transparency = torch.ones((msak_sum, 1, 1, 1)).to(
+            annotation.device) * 0.6
         visual = torch.cat([color, transparency], dim=-1)
         mask_image = torch.unsqueeze(annotation, -1) * visual
         # Select data according to the index. The index indicates which batch's data to choose at each position, converting the mask_image into a single batch form.
         show = torch.zeros((height, weight, 4)).to(annotation.device)
-        h_indices, w_indices = torch.meshgrid(torch.arange(height), torch.arange(weight), indexing='ij')
-        indices = (index[h_indices, w_indices], h_indices, w_indices, slice(None))
+        h_indices, w_indices = torch.meshgrid(torch.arange(
+            height), torch.arange(weight), indexing='ij')
+        indices = (index[h_indices, w_indices],
+                   h_indices, w_indices, slice(None))
         # Use vectorized indexing to update the values of 'show'.
         show[h_indices, w_indices, :] = mask_image[indices]
         show_cpu = show.cpu().numpy()
         if bboxes is not None:
             for bbox in bboxes:
                 x1, y1, x2, y2 = bbox
-                ax.add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor='b', linewidth=1))
+                ax.add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 -
+                             y1, fill=False, edgecolor='b', linewidth=1))
         # draw point
         if points is not None:
             plt.scatter(
-                [point[0] for i, point in enumerate(points) if pointlabel[i] == 1],
-                [point[1] for i, point in enumerate(points) if pointlabel[i] == 1],
+                [point[0] for i, point in enumerate(
+                    points) if pointlabel[i] == 1],
+                [point[1] for i, point in enumerate(
+                    points) if pointlabel[i] == 1],
                 s=20,
                 c='y',
             )
             plt.scatter(
-                [point[0] for i, point in enumerate(points) if pointlabel[i] == 0],
-                [point[1] for i, point in enumerate(points) if pointlabel[i] == 0],
+                [point[0] for i, point in enumerate(
+                    points) if pointlabel[i] == 0],
+                [point[1] for i, point in enumerate(
+                    points) if pointlabel[i] == 0],
                 s=20,
                 c='m',
             )
         if not retinamask:
-            show_cpu = cv2.resize(show_cpu, (target_width, target_height), interpolation=cv2.INTER_NEAREST)
+            show_cpu = cv2.resize(
+                show_cpu, (target_width, target_height), interpolation=cv2.INTER_NEAREST)
         ax.imshow(show_cpu)
 
     # clip
     @torch.no_grad()
     def retrieve(self, model, preprocess, elements, search_text: str, device) -> int:
-        preprocessed_images = [preprocess(image).to(device) for image in elements]
+        preprocessed_images = [preprocess(
+            image).to(device) for image in elements]
         tokenized_text = clip.tokenize([search_text]).to(device)
         stacked_images = torch.stack(preprocessed_images)
         image_features = model.encode_image(stacked_images)
@@ -366,10 +384,12 @@ class FastSAMPrompt:
             if np.sum(mask['segmentation']) <= 100:
                 filter_id.append(_)
                 continue
-            bbox = self._get_bbox_from_mask(mask['segmentation'])  # mask 的 bbox
-            cropped_boxes.append(self._segment_image(image, bbox))  
+            bbox = self._get_bbox_from_mask(
+                mask['segmentation'])  # mask 的 bbox
+            cropped_boxes.append(self._segment_image(image, bbox))
             # cropped_boxes.append(segment_image(image,mask["segmentation"]))
-            cropped_images.append(bbox)  # Save the bounding box of the cropped image.
+            # Save the bounding box of the cropped image.
+            cropped_images.append(bbox)
 
         return cropped_boxes, cropped_images, not_crop, filter_id, annotations
 
@@ -400,7 +420,8 @@ class FastSAMPrompt:
             # IoUs = torch.zeros(len(masks), dtype=torch.float32)
             bbox_area = (bbox[3] - bbox[1]) * (bbox[2] - bbox[0])
 
-            masks_area = torch.sum(masks[:, bbox[1]:bbox[3], bbox[0]:bbox[2]], dim=(1, 2))
+            masks_area = torch.sum(
+                masks[:, bbox[1]:bbox[3], bbox[0]:bbox[2]], dim=(1, 2))
             orig_masks_area = torch.sum(masks, dim=(1, 2))
 
             union = bbox_area + orig_masks_area - masks_area
@@ -409,7 +430,7 @@ class FastSAMPrompt:
         max_iou_index = list(set(max_iou_index))
         return np.array(masks[max_iou_index].cpu().numpy())
 
-    def point_prompt(self, points, pointlabel):  # numpy 
+    def point_prompt(self, points, pointlabel):  # numpy
 
         masks = self._format_results(self.results[0], 0)
         target_height = self.img.shape[0]
@@ -417,7 +438,8 @@ class FastSAMPrompt:
         h = masks[0]['segmentation'].shape[0]
         w = masks[0]['segmentation'].shape[1]
         if h != target_height or w != target_width:
-            points = [[int(point[0] * w / target_width), int(point[1] * h / target_height)] for point in points]
+            points = [[int(point[0] * w / target_width),
+                       int(point[1] * h / target_height)] for point in points]
         onemask = np.zeros((h, w))
         masks = sorted(masks, key=lambda x: x['area'], reverse=True)
         for i, annotation in enumerate(masks):
@@ -435,9 +457,11 @@ class FastSAMPrompt:
 
     def text_prompt(self, text):
         format_results = self._format_results(self.results[0], 0)
-        cropped_boxes, cropped_images, not_crop, filter_id, annotations = self._crop_image(format_results)
+        cropped_boxes, cropped_images, not_crop, filter_id, annotations = self._crop_image(
+            format_results)
         clip_model, preprocess = clip.load('ViT-B/32', device=self.device)
-        scores = self.retrieve(clip_model, preprocess, cropped_boxes, text, device=self.device)
+        scores = self.retrieve(clip_model, preprocess,
+                               cropped_boxes, text, device=self.device)
         max_idx = scores.argsort()
         max_idx = max_idx[-1]
         max_idx += sum(np.array(filter_id) <= int(max_idx))
@@ -445,4 +469,3 @@ class FastSAMPrompt:
 
     def everything_prompt(self):
         return self.results[0].masks.data
-        
