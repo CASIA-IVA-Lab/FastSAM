@@ -304,7 +304,7 @@ class FastSAMPrompt:
         mask_image = torch.unsqueeze(annotation, -1) * visual
         # Select data according to the index. The index indicates which batch's data to choose at each position, converting the mask_image into a single batch form.
         show = torch.zeros((height, weight, 4)).to(annotation.device)
-        h_indices, w_indices = torch.meshgrid(torch.arange(height), torch.arange(weight), indexing='ij')
+        h_indices, w_indices = torch.meshgrid(torch.arange(height), torch.arange(weight))
         indices = (index[h_indices, w_indices], h_indices, w_indices, slice(None))
         # Use vectorized indexing to update the values of 'show'.
         show[h_indices, w_indices, :] = mask_image[indices]
