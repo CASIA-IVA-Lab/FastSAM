@@ -248,6 +248,18 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
                 # Description
                 gr.Markdown(description_e)
 
+    segment_btn_e.click(segment_everything,
+                        inputs=[
+                            cond_img_e,
+                            input_size_slider,
+                            iou_threshold,
+                            conf_threshold,
+                            mor_check,
+                            contour_check,
+                            retina_check,
+                        ],
+                        outputs=segm_img_e)
+
     with gr.Tab("Points mode"):
         # Images
         with gr.Row(variant="panel"):
@@ -278,7 +290,13 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
             with gr.Column():
                 # Description
                 gr.Markdown(description_p)
-                
+
+    cond_img_p.select(get_points_with_draw, [cond_img_p, add_or_remove], cond_img_p)
+
+    segment_btn_p.click(segment_with_points,
+                        inputs=[cond_img_p],
+                        outputs=[segm_img_p, cond_img_p])
+
     with gr.Tab("Text mode"):
         # Images
         with gr.Row(variant="panel"):
@@ -292,11 +310,11 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
         with gr.Row():
             with gr.Column():
                 input_size_slider_t = gr.components.Slider(minimum=512,
-                                         maximum=1024,
-                                         value=1024,
-                                         step=64,
-                                         label='Input_size',
-                                         info='Our model was trained on a size of 1024')
+                                                           maximum=1024,
+                                                           value=1024,
+                                                           step=64,
+                                                           label='Input_size',
+                                                           info='Our model was trained on a size of 1024')
                 with gr.Row():
                     with gr.Column():
                         contour_check = gr.Checkbox(value=True, label='withContours', info='draw the edges of the masks')
@@ -325,24 +343,6 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
 
                 # Description
                 gr.Markdown(description_e)
-        
-    cond_img_p.select(get_points_with_draw, [cond_img_p, add_or_remove], cond_img_p)
-
-    segment_btn_e.click(segment_everything,
-                        inputs=[
-                            cond_img_e,
-                            input_size_slider,
-                            iou_threshold,
-                            conf_threshold,
-                            mor_check,
-                            contour_check,
-                            retina_check,
-                        ],
-                        outputs=segm_img_e)
-
-    segment_btn_p.click(segment_with_points,
-                        inputs=[cond_img_p],
-                        outputs=[segm_img_p, cond_img_p])
     
     segment_btn_t.click(segment_everything,
                         inputs=[
@@ -362,7 +362,7 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
     
     def clear_text():
         return None, None, None
-    
+
     clear_btn_e.click(clear, outputs=[cond_img_e, segm_img_e])
     clear_btn_p.click(clear, outputs=[cond_img_p, segm_img_p])
     clear_btn_t.click(clear_text, outputs=[cond_img_p, segm_img_p, text_box])
