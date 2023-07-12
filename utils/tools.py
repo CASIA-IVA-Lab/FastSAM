@@ -327,7 +327,7 @@ def fast_show_mask_gpu(
 @torch.no_grad()
 def retriev(
     model, preprocess, elements: [Image.Image], search_text: str, device
-) -> int:
+):
     preprocessed_images = [preprocess(image).to(device) for image in elements]
     tokenized_text = clip.tokenize([search_text]).to(device)
     stacked_images = torch.stack(preprocessed_images)
@@ -351,19 +351,16 @@ def crop_image(annotations, image_like):
     cropped_boxes = []
     cropped_images = []
     not_crop = []
-    filter_id = []
-    # annotations, _ = filter_masks(annotations)
-    # filter_id = list(_)
+    origin_id = []
     for _, mask in enumerate(annotations):
         if np.sum(mask["segmentation"]) <= 100:
-            filter_id.append(_)
             continue
+        origin_id.append(_)
         bbox = get_bbox_from_mask(mask["segmentation"])  # mask 的 bbox
         cropped_boxes.append(segment_image(image, bbox))  # 保存裁剪的图片
         # cropped_boxes.append(segment_image(image,mask["segmentation"]))
         cropped_images.append(bbox)  # 保存裁剪的图片的bbox
-
-    return cropped_boxes, cropped_images, not_crop, filter_id, annotations
+    return cropped_boxes, cropped_images, not_crop, origin_id, annotations
 
 
 def box_prompt(masks, bbox, target_height, target_width):
@@ -419,7 +416,7 @@ def point_prompt(masks, points, point_label, target_height, target_width):  # nu
 
 
 def text_prompt(annotations, text, img_path, device):
-    cropped_boxes, cropped_images, not_crop, filter_id, annotations_ = crop_image(
+    cropped_boxes, cropped_images, not_crop, origin_id, annotations_ = crop_image(
         annotations, img_path
     )
     clip_model, preprocess = clip.load("ViT-B/32", device=device)
@@ -428,5 +425,5 @@ def text_prompt(annotations, text, img_path, device):
     )
     max_idx = scores.argsort()
     max_idx = max_idx[-1]
-    max_idx += sum(np.array(filter_id) <= int(max_idx))
+    max_idx = origin_id[int(max_idx)]
     return annotations_[max_idx]["segmentation"], max_idx

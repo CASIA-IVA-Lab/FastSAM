@@ -237,7 +237,6 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
 
             with gr.Column():
                 with gr.Accordion("Advanced options", open=False):
-                    # text_box = gr.Textbox(label="text prompt")
                     iou_threshold = gr.Slider(0.1, 0.9, 0.7, step=0.1, label='iou', info='iou threshold for filtering the annotations')
                     conf_threshold = gr.Slider(0.1, 0.9, 0.25, step=0.05, label='conf', info='object confidence threshold')
                     with gr.Row():
