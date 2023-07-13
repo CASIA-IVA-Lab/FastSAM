@@ -339,7 +339,7 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
                     with gr.Row():
                         mor_check = gr.Checkbox(value=False, label='better_visual_quality', info='better quality using morphologyEx')
                         retina_check = gr.Checkbox(value=True, label='use_retina', info='draw high-resolution segmentation masks')
-                        wider_check = gr.Checkbox(value=False, label='wider', info='more wider result')
+                        wider_check = gr.Checkbox(value=False, label='wider', info='wider result')
 
                 # Description
                 gr.Markdown(description_e)
