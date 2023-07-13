@@ -76,6 +76,7 @@ def segment_everything(
     withContours=True,
     use_retina=True,
     text="",
+    wider=False,
     mask_random_color=True,
 ):
     input_size = int(input_size)  # 确保 imgsz 是整数
@@ -95,7 +96,7 @@ def segment_everything(
 
     if len(text) > 0:
         results = format_results(results[0], 0)
-        annotations, _ = text_prompt(results, text, input, device=device)
+        annotations, _ = text_prompt(results, text, input, device=device, wider=wider)
         annotations = np.array([annotations])
     else:
         annotations = results[0].masks.data
@@ -324,7 +325,7 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
                         clear_btn_t = gr.Button("Clear", variant="secondary")
 
                 gr.Markdown("Try some of the examples below ⬇️")
-                gr.Examples(examples=["examples/dogs.jpg"],
+                gr.Examples(examples=[["examples/dogs.jpg"]] + examples,
                             inputs=[cond_img_e],
                             # outputs=segm_img_e,
                             # fn=segment_everything,
@@ -337,8 +338,8 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
                     conf_threshold = gr.Slider(0.1, 0.9, 0.25, step=0.05, label='conf', info='object confidence threshold')
                     with gr.Row():
                         mor_check = gr.Checkbox(value=False, label='better_visual_quality', info='better quality using morphologyEx')
-                        with gr.Column():
-                            retina_check = gr.Checkbox(value=True, label='use_retina', info='draw high-resolution segmentation masks')
+                        retina_check = gr.Checkbox(value=True, label='use_retina', info='draw high-resolution segmentation masks')
+                        wider_check = gr.Checkbox(value=False, label='wider', info='more wider result')
 
                 # Description
                 gr.Markdown(description_e)
@@ -353,6 +354,7 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
                             contour_check,
                             retina_check,
                             text_box,
+                            wider_check,
                         ],
                         outputs=segm_img_t)
 
