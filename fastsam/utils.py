@@ -1,4 +1,7 @@
+import numpy as np
 import torch
+from PIL import Image
+
 
 def adjust_bboxes_to_image_border(boxes, image_shape, threshold=20):
     '''Adjust bounding boxes to stick to image border if they are within a certain threshold.
@@ -14,13 +17,18 @@ def adjust_bboxes_to_image_border(boxes, image_shape, threshold=20):
     h, w = image_shape
 
     # Adjust boxes
-    boxes[:, 0] = torch.where(boxes[:, 0] < threshold, torch.tensor(0,dtype=torch.float,device=boxes.device), boxes[:, 0])  # x1
-    boxes[:, 1] = torch.where(boxes[:, 1] < threshold, torch.tensor(0,dtype=torch.float,device=boxes.device), boxes[:, 1])  # y1
-    boxes[:, 2] = torch.where(boxes[:, 2] > w - threshold, torch.tensor(w,dtype=torch.float,device=boxes.device), boxes[:, 2])  # x2
-    boxes[:, 3] = torch.where(boxes[:, 3] > h - threshold, torch.tensor(h,dtype=torch.float,device=boxes.device), boxes[:, 3])  # y2
-
+    boxes[:, 0] = torch.where(boxes[:, 0] < threshold, torch.tensor(
+        0, dtype=torch.float, device=boxes.device), boxes[:, 0])  # x1
+    boxes[:, 1] = torch.where(boxes[:, 1] < threshold, torch.tensor(
+        0, dtype=torch.float, device=boxes.device), boxes[:, 1])  # y1
+    boxes[:, 2] = torch.where(boxes[:, 2] > w - threshold, torch.tensor(
+        w, dtype=torch.float, device=boxes.device), boxes[:, 2])  # x2
+    boxes[:, 3] = torch.where(boxes[:, 3] > h - threshold, torch.tensor(
+        h, dtype=torch.float, device=boxes.device), boxes[:, 3])  # y2
 
     return boxes
+
+
 
 def convert_box_xywh_to_xyxy(box):
     x1 = box[0]
@@ -28,6 +36,7 @@ def convert_box_xywh_to_xyxy(box):
     x2 = box[0] + box[2]
     y2 = box[1] + box[3]
     return [x1, y1, x2, y2]
+
 
 def bbox_iou(box1, boxes, iou_thres=0.9, image_shape=(640, 640), raw_output=False):
     '''Compute the Intersection-Over-Union of a bounding box with respect to an array of other bounding boxes.
@@ -65,3 +74,13 @@ def bbox_iou(box1, boxes, iou_thres=0.9, image_shape=(640, 640), raw_output=Fals
     high_iou_indices = torch.nonzero(iou > iou_thres).flatten()
 
     return high_iou_indices
+
+
+def image_to_np_ndarray(image):
+    if type(image) is str:
+        return np.array(Image.open(image))
+    elif issubclass(type(image), Image.Image):
+        return np.array(image)
+    elif type(image) is np.ndarray:
+        return image
+    return None
