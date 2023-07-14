@@ -4,9 +4,8 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from .utils import image_to_np_ndarray
 from PIL import Image
-
-
 
 try:
     import clip  # for linear_assignment
@@ -20,19 +19,12 @@ except (ImportError, AssertionError, AttributeError):
 
 class FastSAMPrompt:
 
-    def __init__(self, img_path, results, device='cuda') -> None:
+    def __init__(self, image: str | np.ndarray | Image.Image | None, results, device='cuda') -> None:
         self.device = device
         self.results = results
-        self.img_path = img_path
-        self.ori_img = cv2.imread(img_path) if img_path else None
-
-    @staticmethod
-    def from_np_tensor(img_tensor, results, device='cuda') -> 'FastSAMPrompt':
-        p = FastSAMPrompt(None, results, device)
-        p.ori_img = img_tensor
-        return p
-
-    def _segment_image(self, image, bbox):
+        self.img = image_to_np_ndarray(image)
+    
+    def _segment_image(self, image: np.ndarray | Image.Image, bbox):
         image_array = np.array(image)
         segmented_image_array = np.zeros_like(image_array)
         x1, y1, x2, y2 = bbox
@@ -106,7 +98,7 @@ class FastSAMPrompt:
              withContours=True) -> np.ndarray:
         if isinstance(annotations[0], dict):
             annotations = [annotation['segmentation'] for annotation in annotations]
-        image = self.ori_img
+        image = self.img
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         original_h = image.shape[0]
         original_w = image.shape[1]
@@ -191,9 +183,10 @@ class FastSAMPrompt:
         plt.close()
         return result
             
-    def plot(self,
+    # Remark for refactoring: IMO a function should do one thing only, storing the image and plotting should be seperated and do not necessarily need to be class functions but standalone utility functions that the user can chain in his scripts to have more fine-grained control. 
+    def plot_to_file(self,
              annotations,
-             output,
+             img_path,
              bboxes=None,
              points=None,
              point_label=None,
@@ -211,10 +204,11 @@ class FastSAMPrompt:
             retina, 
             withContours,
         )
-        result_name = os.path.basename(self.img_path)
-        if not os.path.exists(output):
-            os.makedirs(output)
-        cv2.imwrite(os.path.join(output, result_name), result)
+
+        path = os.path.dirname(os.path.abspath(img_path))
+        if not os.path.exists(path):
+            os.makedirs(path)
+        cv2.imwrite(img_path, result)
      
     #   CPU post process
     def fast_show_mask(
@@ -349,7 +343,7 @@ class FastSAMPrompt:
 
     def _crop_image(self, format_results):
 
-        image = Image.fromarray(cv2.cvtColor(self.ori_img, cv2.COLOR_BGR2RGB))
+        image = Image.fromarray(cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB))
         ori_w, ori_h = image.size
         annotations = format_results
         mask_h, mask_w = annotations[0]['segmentation'].shape
@@ -381,8 +375,8 @@ class FastSAMPrompt:
         for bbox in bboxes:
             assert (bbox[2] != 0 and bbox[3] != 0)
             masks = self.results[0].masks.data
-            target_height = self.ori_img.shape[0]
-            target_width = self.ori_img.shape[1]
+            target_height = self.img.shape[0]
+            target_width = self.img.shape[1]
             h = masks.shape[1]
             w = masks.shape[2]
             if h != target_height or w != target_width:
@@ -411,8 +405,8 @@ class FastSAMPrompt:
     def point_prompt(self, points, pointlabel):  # numpy 
 
         masks = self._format_results(self.results[0], 0)
-        target_height = self.ori_img.shape[0]
-        target_width = self.ori_img.shape[1]
+        target_height = self.img.shape[0]
+        target_width = self.img.shape[1]
         h = masks[0]['segmentation'].shape[0]
         w = masks[0]['segmentation'].shape[1]
         if h != target_height or w != target_width:
