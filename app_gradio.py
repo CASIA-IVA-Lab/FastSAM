@@ -21,6 +21,8 @@ device = torch.device(
 title = "<center><strong><font size='8'>🏃 Fast Segment Anything 🤗</font></strong></center>"
 
 news = """ # 📖 News
+        🔥 2023/07/14: Add a "wider result" button in text mode (Thanks for [gaoxinge](https://github.com/CASIA-IVA-Lab/FastSAM/pull/95)).
+
         🔥 2023/06/29: Support the text mode (Thanks for [gaoxinge](https://github.com/CASIA-IVA-Lab/FastSAM/pull/47)).
 
         🔥 2023/06/26: Support the points mode. (Better and faster interaction will come soon!)
