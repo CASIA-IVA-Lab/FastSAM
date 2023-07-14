@@ -103,7 +103,7 @@ def fast_show_mask(
     annotation = annotation[sorted_indices]
 
     index = (annotation != 0).argmax(axis=0)
-    if random_color == True:
+    if random_color:
         color = np.random.random((mask_sum, 1, 1, 3))
     else:
         color = np.ones((mask_sum, 1, 1, 3)) * np.array([30 / 255, 144 / 255, 255 / 255])
@@ -121,7 +121,7 @@ def fast_show_mask(
         x1, y1, x2, y2 = bbox
         ax.add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor='b', linewidth=1))
 
-    if retinamask == False:
+    if not retinamask:
         mask = cv2.resize(mask, (target_width, target_height), interpolation=cv2.INTER_NEAREST)
 
     return mask
@@ -145,7 +145,7 @@ def fast_show_mask_gpu(
     annotation = annotation[sorted_indices]
     # 找每个位置第一个非零值下标
     index = (annotation != 0).to(torch.long).argmax(dim=0)
-    if random_color == True:
+    if random_color:
         color = torch.rand((mask_sum, 1, 1, 3)).to(device)
     else:
         color = torch.ones((mask_sum, 1, 1, 3)).to(device) * torch.tensor(
@@ -168,7 +168,7 @@ def fast_show_mask_gpu(
                 (x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor="b", linewidth=1
             )
         )
-    if retinamask == False:
+    if not retinamask:
         mask_cpu = cv2.resize(
             mask_cpu, (target_width, target_height), interpolation=cv2.INTER_NEAREST
         )
