@@ -19,13 +19,18 @@ except (ImportError, AssertionError, AttributeError):
 
 class FastSAMPrompt:
 
-    def __init__(self, image: str | np.ndarray | Image.Image | None, results, device='cuda') -> None:
+    def __init__(self, image, results, device='cuda'):
+        if isinstance(image, str) or isinstance(image, Image.Image):
+            image = image_to_np_ndarray(image)
         self.device = device
         self.results = results
-        self.img = image_to_np_ndarray(image)
+        self.img = image
     
-    def _segment_image(self, image: np.ndarray | Image.Image, bbox):
-        image_array = np.array(image)
+    def _segment_image(self, image, bbox):
+        if isinstance(image, Image.Image):
+            image_array = np.array(image)
+        else:
+            image_array = image
         segmented_image_array = np.zeros_like(image_array)
         x1, y1, x2, y2 = bbox
         segmented_image_array[y1:y2, x1:x2] = image_array[y1:y2, x1:x2]
@@ -184,9 +189,9 @@ class FastSAMPrompt:
         return result
             
     # Remark for refactoring: IMO a function should do one thing only, storing the image and plotting should be seperated and do not necessarily need to be class functions but standalone utility functions that the user can chain in his scripts to have more fine-grained control. 
-    def plot_to_file(self,
+    def plot(self,
              annotations,
-             img_path,
+             output_path,
              bboxes=None,
              points=None,
              point_label=None,
@@ -205,10 +210,10 @@ class FastSAMPrompt:
             withContours,
         )
 
-        path = os.path.dirname(os.path.abspath(img_path))
+        path = os.path.dirname(os.path.abspath(output_path))
         if not os.path.exists(path):
             os.makedirs(path)
-        cv2.imwrite(img_path, result)
+        cv2.imwrite(output_path, result)
      
     #   CPU post process
     def fast_show_mask(

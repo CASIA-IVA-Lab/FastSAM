@@ -29,6 +29,7 @@ def adjust_bboxes_to_image_border(boxes, image_shape, threshold=20):
     return boxes
 
 
+
 def convert_box_xywh_to_xyxy(box):
     x1 = box[0]
     y1 = box[1]
@@ -75,7 +76,7 @@ def bbox_iou(box1, boxes, iou_thres=0.9, image_shape=(640, 640), raw_output=Fals
     return high_iou_indices
 
 
-def image_to_np_ndarray(image: str | np.ndarray | Image.Image | None) -> np.ndarray:
+def image_to_np_ndarray(image):
     if type(image) is str:
         return np.array(Image.open(image))
     elif issubclass(type(image), Image.Image):
