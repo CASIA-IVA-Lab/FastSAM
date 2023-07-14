@@ -415,7 +415,7 @@ def point_prompt(masks, points, point_label, target_height, target_width):  # nu
     return onemask, 0
 
 
-def text_prompt(annotations, text, img_path, device):
+def text_prompt(annotations, text, img_path, device, wider=False, threshold=0.9):
     cropped_boxes, cropped_images, not_crop, origin_id, annotations_ = crop_image(
         annotations, img_path
     )
@@ -426,4 +426,17 @@ def text_prompt(annotations, text, img_path, device):
     max_idx = scores.argsort()
     max_idx = max_idx[-1]
     max_idx = origin_id[int(max_idx)]
+
+    # find the biggest mask which contains the mask with max score
+    if wider:
+        mask0 = annotations_[max_idx]["segmentation"]
+        area0 = np.sum(mask0)
+        areas = [(i, np.sum(mask["segmentation"])) for i, mask in enumerate(annotations_) if i in origin_id]
+        areas = sorted(areas, key=lambda area: area[1], reverse=True)
+        indices = [area[0] for area in areas]
+        for index in indices:
+            if index == max_idx or np.sum(annotations_[index]["segmentation"] & mask0) / area0 > threshold:
+                max_idx = index
+                break
+
     return annotations_[max_idx]["segmentation"], max_idx
