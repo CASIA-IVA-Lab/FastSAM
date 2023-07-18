@@ -213,6 +213,7 @@ class FastSAMPrompt:
         path = os.path.dirname(os.path.abspath(output_path))
         if not os.path.exists(path):
             os.makedirs(path)
+        result = result[:, :, ::-1]
         cv2.imwrite(output_path, result)
      
     #   CPU post process
