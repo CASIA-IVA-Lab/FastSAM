@@ -87,7 +87,7 @@ prompt_process = FastSAMPrompt(IMAGE_PATH, everything_results, device=DEVICE)
 ann = prompt_process.everything_prompt()
 
 # bbox default shape [0,0,0,0] -> [x1,y1,x2,y2]
-ann = prompt_process.box_prompt(bbox=[[200, 200, 300, 300]])
+ann = prompt_process.box_prompt(bbox=[200, 200, 300, 300])
 
 # text prompt
 ann = prompt_process.text_prompt(text='a photo of a dog')
