@@ -47,8 +47,10 @@ class FastSAM(YOLO):
         overrides['save'] = kwargs.get('save', False)  # do not save by default if called in Python
         self.predictor = FastSAMPredictor(overrides=overrides)
         self.predictor.setup_model(model=self.model, verbose=False)
-
-        return self.predictor(source, stream=stream)
+        try:
+            return self.predictor(source, stream=stream)
+        except Exception as e:
+            return None
 
     def train(self, **kwargs):
         """Function trains models but raises an error as FastSAM models do not support training."""

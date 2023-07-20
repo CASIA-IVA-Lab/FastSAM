@@ -199,6 +199,8 @@ class FastSAMPrompt:
              better_quality=True,
              retina=False,
              withContours=True):
+        if len(annotations) == 0:
+            return None
         result = self.plot_to_result(
             annotations, 
             bboxes, 
@@ -373,7 +375,8 @@ class FastSAMPrompt:
         return cropped_boxes, cropped_images, not_crop, filter_id, annotations
 
     def box_prompt(self, bbox=None, bboxes=None):
-
+        if self.results == None:
+            return []
         assert bbox or bboxes
         if bboxes is None:
             bboxes = [bbox]
@@ -409,7 +412,8 @@ class FastSAMPrompt:
         return np.array(masks[max_iou_index].cpu().numpy())
 
     def point_prompt(self, points, pointlabel):  # numpy 
-
+        if self.results == None:
+            return []
         masks = self._format_results(self.results[0], 0)
         target_height = self.img.shape[0]
         target_width = self.img.shape[1]
@@ -433,6 +437,8 @@ class FastSAMPrompt:
         return np.array([onemask])
 
     def text_prompt(self, text):
+        if self.results == None:
+            return []
         format_results = self._format_results(self.results[0], 0)
         cropped_boxes, cropped_images, not_crop, filter_id, annotations = self._crop_image(format_results)
         clip_model, preprocess = clip.load('ViT-B/32', device=self.device)
@@ -443,5 +449,7 @@ class FastSAMPrompt:
         return np.array([annotations[max_idx]['segmentation']])
 
     def everything_prompt(self):
+        if self.results == None:
+            return []
         return self.results[0].masks.data
         

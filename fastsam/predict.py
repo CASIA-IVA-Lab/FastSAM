@@ -23,6 +23,7 @@ class FastSAMPredictor(DetectionPredictor):
 
         results = []
         if len(p) == 0 or len(p[0]) == 0:
+            print("No object detected.")
             return results
 
         full_box = torch.zeros_like(p[0][0])
