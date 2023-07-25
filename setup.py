@@ -5,8 +5,11 @@ from setuptools import find_packages, setup
 
 setup(
     name="fastsam",
-    version="0.1.0",
+    version="0.1.1",
     install_requires=[],
+    package_dir= {
+        "fastsam": "fastsam",
+        "fastsam_tools": "utils",
+    },
     url="https://github.com/CASIA-IVA-Lab/FastSAM",
-    packages=find_packages(exclude=["assets"])
 )
