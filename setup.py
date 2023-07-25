@@ -7,7 +7,6 @@ setup(
     name="fastsam",
     version="0.1.0",
     install_requires=[],
-    description="",
     url="https://github.com/CASIA-IVA-Lab/FastSAM",
     packages=find_packages(exclude=["assets"])
 )
