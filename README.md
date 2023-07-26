@@ -97,7 +97,7 @@ ann = prompt_process.text_prompt(text='a photo of a dog')
 # point_label default [0] [1,0] 0:background, 1:foreground
 ann = prompt_process.point_prompt(points=[[620, 360]], pointlabel=[1])
 
-prompt_process.plot(annotations=ann,output='./output/',)
+prompt_process.plot(annotations=ann,output_path='./output/dog.jpg',)
 ```
 
 You are also welcomed to try our Colab demo: [FastSAM_example.ipynb](https://colab.research.google.com/drive/1oX14f6IneGGw612WgVlAiy91UHwFAvr9?usp=sharing).
