@@ -1,0 +1,12 @@
+#For the data format, please refer to https://docs.ultralytics.com/datasets/segment/coco/
+
+path: '/home/q1/dwc/sa'
+
+train: ['train',]
+
+val: 'train'
+test: 'train'
+
+# Classes
+names:
+  0: object

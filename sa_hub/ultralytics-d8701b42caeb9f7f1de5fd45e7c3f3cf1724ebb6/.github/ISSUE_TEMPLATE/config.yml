@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📄 Docs
+    url: https://docs.ultralytics.com/
+    about: Full Ultralytics YOLOv8 Documentation
+  - name: 💬 Forum
+    url: https://community.ultralytics.com/
+    about: Ask on Ultralytics Community Forum
+  - name: 🎧 Discord
+    url: https://discord.gg/7aegy5d8
+    about: Ask on Ultralytics Discord

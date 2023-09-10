@@ -1,0 +1,36 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# Builds ultralytics/ultralytics:latest-arm64 image on DockerHub https://hub.docker.com/r/ultralytics/ultralytics
+# Image is aarch64-compatible for Apple M1 and other ARM architectures i.e. Jetson Nano and Raspberry Pi
+
+# Start FROM Ubuntu image https://hub.docker.com/_/ubuntu
+FROM arm64v8/ubuntu:22.10
+
+# Downloads to user config dir
+ADD https://ultralytics.com/assets/Arial.ttf https://ultralytics.com/assets/Arial.Unicode.ttf /root/.config/Ultralytics/
+
+# Install linux packages
+RUN apt update \
+    && apt install --no-install-recommends -y python3-pip git zip curl htop gcc libgl1-mesa-glx libglib2.0-0 libpython3-dev
+# RUN alias python=python3
+
+# Create working directory
+RUN mkdir -p /usr/src/ultralytics
+WORKDIR /usr/src/ultralytics
+
+# Copy contents
+# COPY . /usr/src/app  (issues as not a .git directory)
+RUN git clone https://github.com/ultralytics/ultralytics /usr/src/ultralytics
+ADD https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.pt /usr/src/ultralytics/
+
+# Install pip packages
+RUN python3 -m pip install --upgrade pip wheel
+RUN pip install --no-cache -e . thop
+
+
+# Usage Examples -------------------------------------------------------------------------------------------------------
+
+# Build and Push
+# t=ultralytics/ultralytics:latest-arm64 && sudo docker build --platform linux/arm64 -f docker/Dockerfile-arm64 -t $t . && sudo docker push $t
+
+# Pull and Run
+# t=ultralytics/ultralytics:latest-arm64 && sudo docker pull $t && sudo docker run -it --ipc=host -v "$(pwd)"/datasets:/usr/src/datasets $t
