@@ -50,7 +50,7 @@ pip install git+https://github.com/openai/CLIP.git
 ```
 
 ## <a name="GettingStarted"></a> Getting Started
-Training from scratch or validation [Training and Validation Code](TRAIN_AND_VAL.md).
+
 
 First download a [model checkpoint](#model-checkpoints).
 
@@ -105,9 +105,14 @@ prompt_process.plot(annotations=ann,output_path='./output/dog.jpg',)
 
 You are also welcomed to try our Colab demo: [FastSAM_example.ipynb](https://colab.research.google.com/drive/1oX14f6IneGGw612WgVlAiy91UHwFAvr9?usp=sharing).
 
+
+
 ## Different Inference Options
 
 We provide various options for different purposes, details are in [MORE_USAGES.md](MORE_USAGES.md).
+
+## Training or Validation
+Training from scratch or validation: [Training and Validation Code](TRAIN_AND_VAL.md).
 
 ## Web demo
 
