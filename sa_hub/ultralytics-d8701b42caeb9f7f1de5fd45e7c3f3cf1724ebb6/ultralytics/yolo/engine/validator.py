@@ -157,23 +157,33 @@ class BaseValidator:
 
             # Inference
             with dt[1]:
-                preds = model(batch['img'], augment=self.args.augment)
+                preds = model(batch['img'])
 
             # Loss
             with dt[2]:
                 if self.training:
-                    self.loss += model.loss(batch, preds)[1]
+                    self.loss += trainer.criterion(preds, batch)[1]
 
             # Postprocess
             with dt[3]:
                 preds = self.postprocess(preds)
-
-            self.update_metrics(preds, batch)
+            # import pdb;pdb.set_trace()
+            try:
+                self.update_metrics(preds, batch)
+            except:
+                with open('wrong_file_1.txt', 'a') as f:
+                    f.write(str(batch['im_file']))
+                    f.write('\n')
+                # continue
             if self.args.plots and batch_i < 3:
                 self.plot_val_samples(batch, batch_i)
                 self.plot_predictions(batch, preds, batch_i)
-
+            # print(self.args.save_json, self.jdict)
             self.run_callbacks('on_val_batch_end')
+            # if self.args.save_json and self.jdict:
+            #     with open(str(self.save_dir / 'tmp_predictions.json'), 'w') as f:
+            #         # LOGGER.info(f'Saving {f.name}...')
+            #         json.dump(self.jdict, f)  # flatten and save
         stats = self.get_stats()
         self.check_stats(stats)
         self.speed = dict(zip(self.speed.keys(), (x.t / len(self.dataloader.dataset) * 1E3 for x in dt)))
@@ -187,6 +197,7 @@ class BaseValidator:
         else:
             LOGGER.info('Speed: %.1fms preprocess, %.1fms inference, %.1fms loss, %.1fms postprocess per image' %
                         tuple(self.speed.values()))
+            
             if self.args.save_json and self.jdict:
                 with open(str(self.save_dir / 'predictions.json'), 'w') as f:
                     LOGGER.info(f'Saving {f.name}...')
@@ -195,6 +206,7 @@ class BaseValidator:
             if self.args.plots or self.args.save_json:
                 LOGGER.info(f"Results saved to {colorstr('bold', self.save_dir)}")
             return stats
+
 
     def add_callback(self, event: str, callback):
         """Appends the given callback."""

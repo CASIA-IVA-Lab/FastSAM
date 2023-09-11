@@ -335,7 +335,13 @@ def scale_image(masks, im0_shape, ratio_pad=None):
     # masks = masks.permute(2, 0, 1).contiguous()
     # masks = F.interpolate(masks[None], im0_shape[:2], mode='bilinear', align_corners=False)[0]
     # masks = masks.permute(1, 2, 0).contiguous()
-    masks = cv2.resize(masks, (im0_shape[1], im0_shape[0]))
+    cv_limit = 512
+    if masks.shape[2] <= cv_limit:
+        masks = cv2.resize(masks, (im0_shape[1], im0_shape[0]))
+    else:
+        # split masks array on batches with max size 512 along channel axis, resize and merge them back
+        masks = np.concatenate([cv2.resize(masks[:, :, i:min(i + cv_limit, masks.shape[2])], (im0_shape[1], im0_shape[0]))
+                                for i in range(0, masks.shape[2], cv_limit)], axis=2)
     if len(masks.shape) == 2:
         masks = masks[:, :, None]
 
