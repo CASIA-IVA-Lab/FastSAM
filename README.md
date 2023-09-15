@@ -112,7 +112,7 @@ You are also welcomed to try our Colab demo: [FastSAM_example.ipynb](https://col
 We provide various options for different purposes, details are in [MORE_USAGES.md](MORE_USAGES.md).
 
 ## Training or Validation
-Training from scratch or validation: [Training and Validation Code](sa_hub/TRAIN_AND_VAL.md).
+Training from scratch or validation: [Training and Validation Code](https://github.com/CASIA-IVA-Lab/FastSAM/releases).
 
 ## Web demo
 
