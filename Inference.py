@@ -72,7 +72,7 @@ def parse_args():
         "--withContours", type=bool, default=False, help="draw the edges of the masks"
     )
     parser.add_argument(
-        "--img_folder", type=str, default="./images/", help="if you want to segment all image in a folder!"
+        "--img_folder", type=str, default="./images/", help="if you want to segment all jpg (others) images in a folder!"
     )
     return parser.parse_args()
 
@@ -83,10 +83,12 @@ def main(args):
     args.point_prompt = ast.literal_eval(args.point_prompt)
     args.box_prompt = convert_box_xywh_to_xyxy(ast.literal_eval(args.box_prompt))
     args.point_label = ast.literal_eval(args.point_label)
-    for img_path in tqdm(glob.glob(args.img_folder)):
+    for img_path in tqdm(glob.glob(os.path.join(args.img_folder,"*.jpg"))):
       image_name = img_path.split("/")[-1]
       image_dir = "/".join(img_path.split("/")[:-2]) 
-      output = os.path.join(image_dir,args.output,image_name)
+      output_dir = os.path.join(image_dir,args.output)
+      if not os.path.exists(output_dir):
+          os.makedirs(output_dir)     
       input = Image.open(img_path)
       input = input.convert("RGB")
       everything_results = model(
@@ -116,7 +118,7 @@ def main(args):
           ann = prompt_process.everything_prompt()
       prompt_process.plot(
           annotations=ann,
-          output_path=output,
+          output_path=os.path.join(output_dir, image_name),
           bboxes = bboxes,
           points = points,
           point_label = point_label,
