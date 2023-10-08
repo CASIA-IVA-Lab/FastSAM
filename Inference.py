@@ -31,7 +31,7 @@ def parse_args():
         "--conf", type=float, default=0.4, help="object confidence threshold"
     )
     parser.add_argument(
-        "--output", type=str, default="./output/", help="image save path"
+        "--output", type=str, default="output", help="image save path"
     )
     parser.add_argument(
         "--randomcolor", type=bool, default=True, help="mask random color"
@@ -86,7 +86,7 @@ def main(args):
     for img_path in tqdm(glob.glob(args.img_folder)):
       image_name = img_path.split("/")[-1]
       image_dir = "/".join(img_path.split("/")[:-2]) 
-      output = os.path.join(image_dir,"segmentated",image_name)
+      output = os.path.join(image_dir,args.output,image_name)
       input = Image.open(img_path)
       input = input.convert("RGB")
       everything_results = model(
