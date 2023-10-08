@@ -101,10 +101,16 @@ class FastSAMPrompt:
              better_quality=True,
              retina=False,
              withContours=True) -> np.ndarray:
-        if isinstance(annotations[0], dict):
-            annotations = [annotation['segmentation'] for annotation in annotations]
+
         image = self.img
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+        if len(annotations) == 0:
+            return  cv2.cvtColor(image, cv2.COLOR_RGB2BGR) # if cannot detect anything, return original image
+            
+        if isinstance(annotations[0], dict):
+            annotations = [annotation['segmentation'] for annotation in annotations]
+    
         original_h = image.shape[0]
         original_w = image.shape[1]
         if sys.platform == "darwin":
