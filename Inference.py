@@ -77,7 +77,6 @@ def parse_args():
     return parser.parse_args()
 
 
-
 def main(args):
     # load model
     model = FastSAM(args.model_path)
