@@ -7,7 +7,7 @@ REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 REQUIREMENTS += [
     "CLIP @ git+https://github.com/openai/CLIP.git@a1d071733d7111c9c014f024669f959182114e33#egg=CLIP"
 ]
-
+print(REQUIREMENTS)
 setup(
     name="fastsam",
     version="0.1.1",
