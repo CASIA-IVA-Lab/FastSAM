@@ -7,6 +7,7 @@ setup(
     name="fastsam",
     version="0.1.1",
     install_requires=[],
+    packages=["fastsam", "fastsam_tools"],
     package_dir= {
         "fastsam": "fastsam",
         "fastsam_tools": "utils",
