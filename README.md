@@ -12,7 +12,7 @@ the SAM method at **50× higher run-time speed**.
 ![FastSAM design](assets/Overview.png)
 
 **🍇 Updates**
-- **`2023/11/25`** Release  [Inference with openvino code](https://github.com/zhg-SZPT/FastSAM_Awsome_Openvino.git). Thanks to [zhg-SZPT](https://github.com/zhg-SZPT) for help.
+- **`2023/11/25`** Release  [Inference with openvino code](https://github.com/zhg-SZPT/FastSAM_Awsome_Openvino.git). Thanks to [zhg-SZPT](https://github.com/zhg-SZPT) Team for help.
 - **`2023/09/11`** Release  [Training and Validation Code](https://github.com/CASIA-IVA-Lab/FastSAM/releases).
 - **`2023/08/17`** Release  [OpenXLab Demo](https://openxlab.org.cn/apps/detail/zxair/FastSAM). Thanks to OpenXLab Team for help.
 - **`2023/07/06`** Added to [Ultralytics (YOLOv8) Model Hub](https://docs.ultralytics.com/models/fast-sam/). Thanks to [Ultralytics](https://github.com/ultralytics/ultralytics) for help 🌹.
