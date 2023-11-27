@@ -12,6 +12,7 @@ the SAM method at **50× higher run-time speed**.
 ![FastSAM design](assets/Overview.png)
 
 **🍇 Updates**
+- **`2023/11/28`** Recommendation: [Semantic FastSAM](https://github.com/KBH00/Semantic-Fast-SAM), which add the semantic class labels to FastSAM. Thanks to [KBH00](https://github.com/KBH00/Semantic-Fast-SAM) for this valuable contribution.
 - **`2023/09/11`** Release  [Training and Validation Code](https://github.com/CASIA-IVA-Lab/FastSAM/releases).
 - **`2023/08/17`** Release  [OpenXLab Demo](https://openxlab.org.cn/apps/detail/zxair/FastSAM). Thanks to OpenXLab Team for help.
 - **`2023/07/06`** Added to [Ultralytics (YOLOv8) Model Hub](https://docs.ultralytics.com/models/fast-sam/). Thanks to [Ultralytics](https://github.com/ultralytics/ultralytics) for help 🌹.
