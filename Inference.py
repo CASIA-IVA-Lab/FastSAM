@@ -4,6 +4,9 @@ import ast
 import torch
 from PIL import Image
 from utils.tools import convert_box_xywh_to_xyxy
+import glob
+from tqdm import tqdm
+import os
 
 
 def parse_args():
@@ -12,7 +15,7 @@ def parse_args():
         "--model_path", type=str, default="./weights/FastSAM.pt", help="model"
     )
     parser.add_argument(
-        "--img_path", type=str, default="./images/dogs.jpg", help="path to image file"
+        "--img_path", type=str, default="./images/", help="This can be a folder or just path to one image (single inference)"
     )
     parser.add_argument("--imgsz", type=int, default=1024, help="image size")
     parser.add_argument(
@@ -28,7 +31,7 @@ def parse_args():
         "--conf", type=float, default=0.4, help="object confidence threshold"
     )
     parser.add_argument(
-        "--output", type=str, default="./output/", help="image save path"
+        "--output", type=str, default="output", help="folder for saving outputs"
     )
     parser.add_argument(
         "--randomcolor", type=bool, default=True, help="mask random color"
@@ -71,13 +74,13 @@ def parse_args():
     return parser.parse_args()
 
 
-def main(args):
-    # load model
-    model = FastSAM(args.model_path)
-    args.point_prompt = ast.literal_eval(args.point_prompt)
-    args.box_prompt = convert_box_xywh_to_xyxy(ast.literal_eval(args.box_prompt))
-    args.point_label = ast.literal_eval(args.point_label)
-    input = Image.open(args.img_path)
+def single_infer(img_path, model):
+    image_name = img_path.split("/")[-1]
+    image_dir = "/".join(img_path.split("/")[:-2]) 
+    output_dir = os.path.join(image_dir,args.output)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)     
+    input = Image.open(img_path)
     input = input.convert("RGB")
     everything_results = model(
         input,
@@ -86,7 +89,7 @@ def main(args):
         imgsz=args.imgsz,
         conf=args.conf,
         iou=args.iou    
-        )
+        )        
     bboxes = None
     points = None
     point_label = None
@@ -106,7 +109,7 @@ def main(args):
         ann = prompt_process.everything_prompt()
     prompt_process.plot(
         annotations=ann,
-        output_path=args.output+args.img_path.split("/")[-1],
+        output_path=os.path.join(output_dir, image_name),
         bboxes = bboxes,
         points = points,
         point_label = point_label,
@@ -115,6 +118,17 @@ def main(args):
     )
 
 
+def main(args):
+    # load model
+    model = FastSAM(args.model_path)
+    args.point_prompt = ast.literal_eval(args.point_prompt)
+    args.box_prompt = convert_box_xywh_to_xyxy(ast.literal_eval(args.box_prompt))
+    args.point_label = ast.literal_eval(args.point_label)
+    if os.path.isdir(args.img_path):
+        for img_path in tqdm(glob.glob(os.path.join(args.img_path,"*.jpg"))):
+            single_infer(img_path, model)
+    else:
+        single_infer(args.img_path, model)
 
 
 if __name__ == "__main__":
