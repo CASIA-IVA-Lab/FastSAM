@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from .utils import image_to_np_ndarray
 from PIL import Image
+import logging
 
 try:
     import clip  # for linear_assignment
@@ -100,7 +101,8 @@ class FastSAMPrompt:
              mask_random_color=True,
              better_quality=True,
              retina=False,
-             withContours=True) -> np.ndarray:
+             withContours=True,
+             bwMask="") -> np.ndarray:
         if isinstance(annotations[0], dict):
             annotations = [annotation['segmentation'] for annotation in annotations]
         image = self.img
@@ -109,14 +111,17 @@ class FastSAMPrompt:
         original_w = image.shape[1]
         if sys.platform == "darwin":
             plt.switch_backend("TkAgg")
-        plt.figure(figsize=(original_w / 100, original_h / 100))
+        bgColor="white"
+        if bwMask == "white":
+            bgColor="black"
+        plt.figure(figsize=(original_w / 100, original_h / 100), facecolor=bgColor, edgecolor=bgColor)
         # Add subplot with no margin.
         plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
         plt.margins(0, 0)
         plt.gca().xaxis.set_major_locator(plt.NullLocator())
         plt.gca().yaxis.set_major_locator(plt.NullLocator())
-
-        plt.imshow(image)
+        if bwMask == "":
+            plt.imshow(image)
         if better_quality:
             if isinstance(annotations[0], torch.Tensor):
                 annotations = np.array(annotations.cpu())
@@ -135,6 +140,7 @@ class FastSAMPrompt:
                 retinamask=retina,
                 target_height=original_h,
                 target_width=original_w,
+                bwMask=bwMask,
             )
         else:
             if isinstance(annotations[0], np.ndarray):
@@ -149,6 +155,7 @@ class FastSAMPrompt:
                 retinamask=retina,
                 target_height=original_h,
                 target_width=original_w,
+                bwMask=bwMask,
             )
         if isinstance(annotations, torch.Tensor):
             annotations = annotations.cpu().numpy()
@@ -198,7 +205,8 @@ class FastSAMPrompt:
              mask_random_color=True,
              better_quality=True,
              retina=False,
-             withContours=True):
+             withContours=True,
+             bwMask=""):
         if len(annotations) == 0:
             return None
         result = self.plot_to_result(
@@ -210,6 +218,7 @@ class FastSAMPrompt:
             better_quality, 
             retina, 
             withContours,
+            bwMask,
         )
 
         path = os.path.dirname(os.path.abspath(output_path))
@@ -230,6 +239,7 @@ class FastSAMPrompt:
         retinamask=True,
         target_height=960,
         target_width=960,
+        bwMask="",
     ):
         msak_sum = annotation.shape[0]
         height = annotation.shape[1]
@@ -239,12 +249,19 @@ class FastSAMPrompt:
         sorted_indices = np.argsort(areas)
         annotation = annotation[sorted_indices]
 
+        opacity=0.6
         index = (annotation != 0).argmax(axis=0)
-        if random_color:
+        if bwMask == "white":
+            color = np.ones((msak_sum, 1, 1, 3))
+            opacity=1
+        elif bwMask == "black":
+            color = np.zeros((msak_sum, 1, 1, 3))
+            opacity=1
+        elif random_color:
             color = np.random.random((msak_sum, 1, 1, 3))
         else:
             color = np.ones((msak_sum, 1, 1, 3)) * np.array([30 / 255, 144 / 255, 255 / 255])
-        transparency = np.ones((msak_sum, 1, 1, 1)) * 0.6
+        transparency = np.ones((msak_sum, 1, 1, 1)) * opacity
         visual = np.concatenate([color, transparency], axis=-1)
         mask_image = np.expand_dims(annotation, -1) * visual
 
@@ -287,6 +304,7 @@ class FastSAMPrompt:
         retinamask=True,
         target_height=960,
         target_width=960,
+        bwMask="",
     ):
         msak_sum = annotation.shape[0]
         height = annotation.shape[1]
@@ -295,13 +313,20 @@ class FastSAMPrompt:
         sorted_indices = torch.argsort(areas, descending=False)
         annotation = annotation[sorted_indices]
         # Find the index of the first non-zero value at each position.
+        opacity=0.6
         index = (annotation != 0).to(torch.long).argmax(dim=0)
-        if random_color:
+        if bwMask == "white":
+            color = torch.ones((msak_sum, 1, 1, 3)).to(annotation.device)
+            opacity=1
+        elif bwMask == "black":
+            color = torch.zeros((msak_sum, 1, 1, 3)).to(annotation.device)
+            opacity=1
+        elif random_color:
             color = torch.rand((msak_sum, 1, 1, 3)).to(annotation.device)
         else:
             color = torch.ones((msak_sum, 1, 1, 3)).to(annotation.device) * torch.tensor([
                 30 / 255, 144 / 255, 255 / 255]).to(annotation.device)
-        transparency = torch.ones((msak_sum, 1, 1, 1)).to(annotation.device) * 0.6
+        transparency = torch.ones((msak_sum, 1, 1, 1)).to(annotation.device) * opacity
         visual = torch.cat([color, transparency], dim=-1)
         mask_image = torch.unsqueeze(annotation, -1) * visual
         # Select data according to the index. The index indicates which batch's data to choose at each position, converting the mask_image into a single batch form.
