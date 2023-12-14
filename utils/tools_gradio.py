@@ -15,6 +15,7 @@ def fast_process(
     bbox=None,
     use_retina=True,
     withContours=True,
+    bwMask=""
 ):
     if isinstance(annotations[0], dict):
         annotations = [annotation['segmentation'] for annotation in annotations]
@@ -37,6 +38,7 @@ def fast_process(
             retinamask=use_retina,
             target_height=original_h,
             target_width=original_w,
+            bwMask=bwMask,
         )
     else:
         if isinstance(annotations[0], np.ndarray):
@@ -49,6 +51,7 @@ def fast_process(
             retinamask=use_retina,
             target_height=original_h,
             target_width=original_w,
+            bwMask=bwMask,
         )
     if isinstance(annotations, torch.Tensor):
         annotations = annotations.cpu().numpy()
@@ -73,7 +76,13 @@ def fast_process(
         color = np.array([0 / 255, 0 / 255, 255 / 255, 0.9])
         contour_mask = temp / 255 * color.reshape(1, 1, -1)
 
-    image = image.convert('RGBA')
+    if bwMask=="":
+        image = image.convert('RGBA')
+    elif bwMask=="white":
+        image = Image.new('1', (original_w, original_h), 0)
+    else:
+        image = Image.new('1', (original_w, original_h), 1)
+
     overlay_inner = Image.fromarray((inner_mask * 255).astype(np.uint8), 'RGBA')
     image.paste(overlay_inner, (0, 0), overlay_inner)
 
@@ -93,6 +102,7 @@ def fast_show_mask(
     retinamask=True,
     target_height=960,
     target_width=960,
+    bwMask="",
 ):
     mask_sum = annotation.shape[0]
     height = annotation.shape[1]
@@ -102,12 +112,19 @@ def fast_show_mask(
     sorted_indices = np.argsort(areas)[::1]
     annotation = annotation[sorted_indices]
 
+    opacity=0.6
     index = (annotation != 0).argmax(axis=0)
-    if random_color:
+    if bwMask == "white":
+        color = np.ones((mask_sum, 1, 1, 3))
+        opacity=1
+    elif bwMask == "black":
+        color = np.zeros((mask_sum, 1, 1, 3))
+        opacity=1
+    elif random_color:
         color = np.random.random((mask_sum, 1, 1, 3))
     else:
         color = np.ones((mask_sum, 1, 1, 3)) * np.array([30 / 255, 144 / 255, 255 / 255])
-    transparency = np.ones((mask_sum, 1, 1, 1)) * 0.6
+    transparency = np.ones((mask_sum, 1, 1, 1)) * opacity
     visual = np.concatenate([color, transparency], axis=-1)
     mask_image = np.expand_dims(annotation, -1) * visual
 
@@ -135,6 +152,7 @@ def fast_show_mask_gpu(
     retinamask=True,
     target_height=960,
     target_width=960,
+    bwMask="",
 ):
     device = annotation.device
     mask_sum = annotation.shape[0]
@@ -144,14 +162,21 @@ def fast_show_mask_gpu(
     sorted_indices = torch.argsort(areas, descending=False)
     annotation = annotation[sorted_indices]
     # 找每个位置第一个非零值下标
+    opacity=0.6
     index = (annotation != 0).to(torch.long).argmax(dim=0)
-    if random_color:
+    if bwMask == "white":
+        color = torch.ones((mask_sum, 1, 1, 3)).to(device)
+        opacity=1
+    elif bwMask == "black":
+        color = torch.zeros((mask_sum, 1, 1, 3)).to(device)
+        opacity=1
+    elif random_color:
         color = torch.rand((mask_sum, 1, 1, 3)).to(device)
     else:
         color = torch.ones((mask_sum, 1, 1, 3)).to(device) * torch.tensor(
             [30 / 255, 144 / 255, 255 / 255]
         ).to(device)
-    transparency = torch.ones((mask_sum, 1, 1, 1)).to(device) * 0.6
+    transparency = torch.ones((mask_sum, 1, 1, 1)).to(device) * opacity
     visual = torch.cat([color, transparency], dim=-1)
     mask_image = torch.unsqueeze(annotation, -1) * visual
     # 按index取数，index指每个位置选哪个batch的数，把mask_image转成一个batch的形式

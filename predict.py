@@ -43,6 +43,10 @@ class Predictor(BasePredictor):
         better_quality: bool = Input(
             description="better quality using morphologyEx", default=False
         ),
+        bw_mask: str = Input(
+            default="",
+            description="empty value to disable, set white or black to get white or black mask"
+        ),
     ) -> Path:
         """Run a single prediction on the model"""
 
@@ -77,6 +81,7 @@ class Predictor(BasePredictor):
             retina=retina,
             text_prompt=text_prompt,
             withContours=withContours,
+            bw_mask=bw_mask
         )
         args.point_prompt = ast.literal_eval(args.point_prompt)
         args.box_prompt = ast.literal_eval(args.box_prompt)
@@ -102,6 +107,7 @@ class Predictor(BasePredictor):
                 args=args,
                 mask_random_color=args.randomcolor,
                 bbox=convert_box_xywh_to_xyxy(args.box_prompt),
+                bwMask=args.bw_mask,
             )
 
         elif args.text_prompt != None:
@@ -109,7 +115,10 @@ class Predictor(BasePredictor):
             annotations = prompt(results, args, text=True)
             annotations = np.array([annotations])
             fast_process(
-                annotations=annotations, args=args, mask_random_color=args.randomcolor
+                annotations=annotations,
+                args=args,
+                mask_random_color=args.randomcolor,
+                bwMask=args.bw_mask,
             )
 
         elif args.point_prompt[0] != [0, 0]:
@@ -122,6 +131,7 @@ class Predictor(BasePredictor):
                 args=args,
                 mask_random_color=args.randomcolor,
                 points=args.point_prompt,
+                bwMask=args.bw_mask,
             )
 
         else:
@@ -129,6 +139,7 @@ class Predictor(BasePredictor):
                 annotations=results[0].masks.data,
                 args=args,
                 mask_random_color=args.randomcolor,
+                bwMask=args.bw_mask,
             )
 
         out = "/tmp.out.png"
