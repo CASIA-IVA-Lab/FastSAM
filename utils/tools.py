@@ -93,7 +93,7 @@ def get_bbox_from_mask(mask):
 
 
 def fast_process(
-    annotations, args, mask_random_color, bbox=None, points=None, edges=False
+    annotations, args, mask_random_color, bbox=None, points=None, edges=False, bwMask=""
 ):
     if isinstance(annotations[0], dict):
         annotations = [annotation["segmentation"] for annotation in annotations]
@@ -104,13 +104,17 @@ def fast_process(
     original_w = image.shape[1]
     if sys.platform == "darwin":
             plt.switch_backend("TkAgg")
-    plt.figure(figsize=(original_w/100, original_h/100))
+    bgColor="white"
+    if bwMask == "white":
+        bgColor="black"
+    plt.figure(figsize=(original_w/100, original_h/100), facecolor=bgColor, edgecolor=bgColor)
     # Add subplot with no margin.
     plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
     plt.margins(0, 0)
     plt.gca().xaxis.set_major_locator(plt.NullLocator())
     plt.gca().yaxis.set_major_locator(plt.NullLocator())
-    plt.imshow(image)
+    if bwMask == "":
+        plt.imshow(image)
     if args.better_quality == True:
         if isinstance(annotations[0], torch.Tensor):
             annotations = np.array(annotations.cpu())
@@ -133,6 +137,7 @@ def fast_process(
             retinamask=args.retina,
             target_height=original_h,
             target_width=original_w,
+            bwMask=bwMask,
         )
     else:
         if isinstance(annotations[0], np.ndarray):
@@ -147,6 +152,7 @@ def fast_process(
             retinamask=args.retina,
             target_height=original_h,
             target_width=original_w,
+            bwMask=bwMask,
         )
     if isinstance(annotations, torch.Tensor):
         annotations = annotations.cpu().numpy()
@@ -202,6 +208,7 @@ def fast_show_mask(
     retinamask=True,
     target_height=960,
     target_width=960,
+    bwMask="",
 ):
     msak_sum = annotation.shape[0]
     height = annotation.shape[1]
@@ -211,14 +218,21 @@ def fast_show_mask(
     sorted_indices = np.argsort(areas)
     annotation = annotation[sorted_indices]
 
+    opacity=0.6
     index = (annotation != 0).argmax(axis=0)
-    if random_color == True:
+    if bwMask == "white":
+        color = np.ones((msak_sum, 1, 1, 3))
+        opacity=1
+    elif bwMask == "black":
+        color = np.zeros((msak_sum, 1, 1, 3))
+        opacity=1
+    elif random_color == True:
         color = np.random.random((msak_sum, 1, 1, 3))
     else:
         color = np.ones((msak_sum, 1, 1, 3)) * np.array(
             [30 / 255, 144 / 255, 255 / 255]
         )
-    transparency = np.ones((msak_sum, 1, 1, 1)) * 0.6
+    transparency = np.ones((msak_sum, 1, 1, 1)) * opacity
     visual = np.concatenate([color, transparency], axis=-1)
     mask_image = np.expand_dims(annotation, -1) * visual
 
@@ -268,6 +282,7 @@ def fast_show_mask_gpu(
     retinamask=True,
     target_height=960,
     target_width=960,
+    bwMask="",
 ):
     msak_sum = annotation.shape[0]
     height = annotation.shape[1]
@@ -276,14 +291,21 @@ def fast_show_mask_gpu(
     sorted_indices = torch.argsort(areas, descending=False)
     annotation = annotation[sorted_indices]
     # 找每个位置第一个非零值下标
+    opacity=0.6
     index = (annotation != 0).to(torch.long).argmax(dim=0)
-    if random_color == True:
+    if bwMask == "white":
+        color = torch.ones((msak_sum, 1, 1, 3)).to(annotation.device)
+        opacity=1
+    elif bwMask == "black":
+        color = torch.zeros((msak_sum, 1, 1, 3)).to(annotation.device)
+        opacity=1
+    elif random_color == True:
         color = torch.rand((msak_sum, 1, 1, 3)).to(annotation.device)
     else:
         color = torch.ones((msak_sum, 1, 1, 3)).to(annotation.device) * torch.tensor(
             [30 / 255, 144 / 255, 255 / 255]
         ).to(annotation.device)
-    transparency = torch.ones((msak_sum, 1, 1, 1)).to(annotation.device) * 0.6
+    transparency = torch.ones((msak_sum, 1, 1, 1)).to(annotation.device) * opacity
     visual = torch.cat([color, transparency], dim=-1)
     mask_image = torch.unsqueeze(annotation, -1) * visual
     # 按index取数，index指每个位置选哪个batch的数，把mask_image转成一个batch的形式

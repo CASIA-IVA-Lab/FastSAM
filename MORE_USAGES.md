@@ -57,3 +57,27 @@ python Inference.py --model_path ./weights/FastSAM.pt \
                     --withContours True 
 ```
 ![text prompt](assets/more_usages/text_prompt_cat.png)
+
+### use text prompt and output black mask
+Use `--bwMask "black"` to specify the mask color
+```shell
+python Inference.py --model_path ./weights/FastSAM.pt \
+                    --img_path ./images/dogs.jpg \
+                    --text_prompt "the black dog" \
+                    --better_quality True \
+                    --withContours True \
+                    --bwMask "black" 
+```
+![text prompt](assets/more_usages/dogs_black.jpeg)
+
+### use text prompt and output white mask
+Use `--bwMask "white"` to specify the mask color
+```shell
+python Inference.py --model_path ./weights/FastSAM.pt \
+                    --img_path ./images/dogs.jpg \
+                    --text_prompt "the black dog" \
+                    --better_quality True \
+                    --withContours True \
+                    --bwMask "white" 
+```
+![text prompt](assets/more_usages/dogs_white.jpeg)

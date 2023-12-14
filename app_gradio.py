@@ -80,7 +80,11 @@ def segment_everything(
     text="",
     wider=False,
     mask_random_color=True,
+    bw_mask="",
 ):
+    # Reset the default value of bw_mask
+    if bw_mask=="None":
+        bw_mask=""
     input_size = int(input_size)  # 确保 imgsz 是整数
     # Thanks for the suggestion by hysts in HuggingFace.
     w, h = input.size
@@ -111,7 +115,8 @@ def segment_everything(
                        mask_random_color=mask_random_color,
                        bbox=None,
                        use_retina=use_retina,
-                       withContours=withContours,)
+                       withContours=withContours,
+                       bwMask=bw_mask)
     return fig
 
 
@@ -124,6 +129,7 @@ def segment_with_points(
     withContours=True,
     use_retina=True,
     mask_random_color=True,
+    bw_mask="",
 ):
     global global_points
     global global_point_label
@@ -157,7 +163,8 @@ def segment_with_points(
                        mask_random_color=mask_random_color,
                        bbox=None,
                        use_retina=use_retina,
-                       withContours=withContours,)
+                       withContours=withContours,
+                       bwMask=bw_mask)
 
     global_points = []
     global_point_label = []
@@ -342,6 +349,9 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
                         mor_check = gr.Checkbox(value=False, label='better_visual_quality', info='better quality using morphologyEx')
                         retina_check = gr.Checkbox(value=True, label='use_retina', info='draw high-resolution segmentation masks')
                         wider_check = gr.Checkbox(value=False, label='wider', info='wider result')
+                    with gr.Row():
+                        bw_mask = gr.Radio(["None", "black", "white"], value="None", label="Output result image as white or black masks")
+                        rand_color = gr.Checkbox(value=False, label='random', info='mask with random color')
 
                 # Description
                 gr.Markdown(description_e)
@@ -357,6 +367,8 @@ with gr.Blocks(css=css, title='Fast Segment Anything') as demo:
                             retina_check,
                             text_box,
                             wider_check,
+                            rand_color,
+                            bw_mask,
                         ],
                         outputs=segm_img_t)
 

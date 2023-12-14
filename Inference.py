@@ -68,6 +68,9 @@ def parse_args():
     parser.add_argument(
         "--withContours", type=bool, default=False, help="draw the edges of the masks"
     )
+    parser.add_argument(
+        "--bwMask", type=str, default="", help="black or white mask mode, reverse for background and foreground"
+    )
     return parser.parse_args()
 
 
@@ -112,6 +115,7 @@ def main(args):
         point_label = point_label,
         withContours=args.withContours,
         better_quality=args.better_quality,
+        bwMask=args.bwMask
     )
 
 
