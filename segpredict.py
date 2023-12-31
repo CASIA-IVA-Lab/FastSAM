@@ -44,7 +44,7 @@ ann = prompt_process.point_prompt(points=[[620, 360]], pointlabel=[1])
 
 prompt_process.plot(
     annotations=ann,
-    output='./output/',
+    output_path='./output/',
     mask_random_color=True,
     better_quality=True,
     retina=False,
