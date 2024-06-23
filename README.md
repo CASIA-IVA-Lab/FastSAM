@@ -77,7 +77,7 @@ python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.j
 python Inference.py --model_path ./weights/FastSAM.pt --img_path ./images/dogs.jpg  --point_prompt "[[520,360],[620,300]]" --point_label "[1,0]"
 ```
 
-You can use the following code to generate all masks, make mask selection based on prompts, and visualize the results.
+You can use the following code to generate all masks and visualize the results.
 ```shell
 from fastsam import FastSAM, FastSAMPrompt
 
