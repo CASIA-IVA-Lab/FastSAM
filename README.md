@@ -44,7 +44,7 @@ cd FastSAM
 pip install -r requirements.txt
 ```
 
-Install CLIP:
+Install CLIP(Required if the text prompt is being tested.):
 
 ```shell
 pip install git+https://github.com/openai/CLIP.git

@@ -5,7 +5,6 @@ import cv2
 import torch
 import os
 import sys
-import clip
 
 
 def convert_box_xywh_to_xyxy(box):
@@ -329,6 +328,7 @@ def retriev(
     model, preprocess, elements: [Image.Image], search_text: str, device
 ):
     preprocessed_images = [preprocess(image).to(device) for image in elements]
+    import clip
     tokenized_text = clip.tokenize([search_text]).to(device)
     stacked_images = torch.stack(preprocessed_images)
     image_features = model.encode_image(stacked_images)
@@ -419,6 +419,8 @@ def text_prompt(annotations, text, img_path, device, wider=False, threshold=0.9)
     cropped_boxes, cropped_images, not_crop, origin_id, annotations_ = crop_image(
         annotations, img_path
     )
+
+    import clip
     clip_model, preprocess = clip.load("ViT-B/32", device=device)
     scores = retriev(
         clip_model, preprocess, cropped_boxes, text, device=device
