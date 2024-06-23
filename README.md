@@ -90,6 +90,11 @@ prompt_process = FastSAMPrompt(IMAGE_PATH, everything_results, device=DEVICE)
 # everything prompt
 ann = prompt_process.everything_prompt()
 
+prompt_process.plot(annotations=ann,output_path='./output/dog.jpg',)
+
+```
+For point/box/text mode prompts, use:
+```
 # bbox default shape [0,0,0,0] -> [x1,y1,x2,y2]
 ann = prompt_process.box_prompt(bboxes=[[200, 200, 300, 300]])
 
@@ -102,6 +107,7 @@ ann = prompt_process.text_prompt(text='a photo of a dog')
 ann = prompt_process.point_prompt(points=[[620, 360]], pointlabel=[1])
 
 prompt_process.plot(annotations=ann,output_path='./output/dog.jpg',)
+
 ```
 
 You are also welcomed to try our Colab demo: [FastSAM_example.ipynb](https://colab.research.google.com/drive/1oX14f6IneGGw612WgVlAiy91UHwFAvr9?usp=sharing).
