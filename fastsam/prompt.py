@@ -331,14 +331,14 @@ class FastSAMPrompt:
     @torch.no_grad()
     def retrieve(self, model, preprocess, elements, search_text: str, device) -> int:
         preprocessed_images = [preprocess(image).to(device) for image in elements]
-    try:
-        import clip  # for linear_assignment
+        try:
+           import clip  # for linear_assignment
     
-    except (ImportError, AssertionError, AttributeError):
-        from ultralytics.yolo.utils.checks import check_requirements
+        except (ImportError, AssertionError, AttributeError):
+           from ultralytics.yolo.utils.checks import check_requirements
     
-        check_requirements('git+https://github.com/openai/CLIP.git')  # required before installing lap from source
-        import clip
+           check_requirements('git+https://github.com/openai/CLIP.git')  # required before installing lap from source
+           import clip
 
 
         tokenized_text = clip.tokenize([search_text]).to(device)
