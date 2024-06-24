@@ -3,7 +3,7 @@
 *.pyd
 .DS_Store
 .idea
-weights
+weights/*.pt
 build/
 *.egg-info/
 gradio_cached_examples
