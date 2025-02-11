@@ -1,5 +1,5 @@
 # Base-----------------------------------
-matplotlib>=3.2.2
+matplotlib>=3.2.2, <3.10.0
 opencv-python>=4.6.0
 Pillow>=7.1.2
 PyYAML>=5.3.1
@@ -13,7 +13,7 @@ pandas>=1.1.4
 seaborn>=0.11.0
 
 gradio==3.35.2
-
+psutil>=6.0.0
 # Ultralytics-----------------------------------
 # ultralytics == 8.0.120
 
