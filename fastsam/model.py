@@ -8,6 +8,7 @@ Usage - Predict:
     model = FastSAM('last.pt')
     results = model.predict('ultralytics/assets/bus.jpg')
 """
+import traceback
 
 from ultralytics.yolo.cfg import get_cfg
 from ultralytics.yolo.engine.exporter import Exporter
@@ -50,6 +51,8 @@ class FastSAM(YOLO):
         try:
             return self.predictor(source, stream=stream)
         except Exception as e:
+            LOGGER.error("Failed to predict with: %s",e)
+            LOGGER.error(traceback.format_exc())
             return None
 
     def train(self, **kwargs):
