@@ -1,5 +1,5 @@
 # Base-----------------------------------
-matplotlib>=3.2.2
+matplotlib>=3.2.2, <3.10.0
 opencv-python>=4.6.0
 Pillow>=7.1.2
 PyYAML>=5.3.1
