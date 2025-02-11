@@ -7,11 +7,18 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 
+from torch.nn.modules.batchnorm import BatchNorm2d
+from torch.nn import Sequential, Conv2d, MaxPool2d, Upsample, ConvTranspose2d
+from ultralytics.nn.modules.block import C2f, DFL, Bottleneck
+from torch.nn.modules.container import ModuleList
+from torch.nn.modules.activation import SiLU
+from ultralytics.nn.modules.conv import Concat
 from ultralytics.nn.modules import (AIFI, C1, C2, C3, C3TR, SPP, SPPF, Bottleneck, BottleneckCSP, C2f, C3Ghost, C3x,
                                     Classify, Concat, Conv, Conv2, ConvTranspose, Detect, DWConv, DWConvTranspose2d,
                                     Focus, GhostBottleneck, GhostConv, HGBlock, HGStem, Pose, RepC3, RepConv,
-                                    RTDETRDecoder, Segment)
-from ultralytics.yolo.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
+                                    RTDETRDecoder, Segment, Proto)
+from ultralytics.yolo.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load, \
+    IterableSimpleNamespace
 from ultralytics.yolo.utils.checks import check_requirements, check_suffix, check_yaml
 from ultralytics.yolo.utils.loss import v8ClassificationLoss, v8DetectionLoss, v8PoseLoss, v8SegmentationLoss
 from ultralytics.yolo.utils.plotting import feature_visualization
@@ -575,7 +582,17 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
 
 def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
     """Loads a single model weights."""
-    ckpt, weight = torch_safe_load(weight)  # load ckpt
+    with torch.serialization.safe_globals([SegmentationModel, Sequential, Conv, Conv2,
+                                           Conv2d, BatchNorm2d, SiLU, C2f, ModuleList, Bottleneck, SPPF, MaxPool2d,
+                                           Upsample, Concat, Segment,
+                                           DFL, Proto, ConvTranspose2d, AIFI, C1, C2, C3, C3TR, SPP, SPPF, Bottleneck,
+                                           BottleneckCSP, C2f, C3Ghost, C3x,
+                                           Classify, Concat, Conv, Conv2, ConvTranspose, Detect, DWConv,
+                                           DWConvTranspose2d,
+                                           Focus, GhostBottleneck, GhostConv, HGBlock, HGStem, Pose, RepC3, RepConv,
+                                           RTDETRDecoder, Segment, getattr, IterableSimpleNamespace
+                                           ]):
+        ckpt, weight = torch_safe_load(weight)  # load ckpt
     args = {**DEFAULT_CFG_DICT, **(ckpt.get('train_args', {}))}  # combine model and default args, preferring model args
     model = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
 
