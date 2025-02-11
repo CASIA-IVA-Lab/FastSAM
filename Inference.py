@@ -44,7 +44,8 @@ def parse_args():
         default="[0]",
         help="[1,0] 0:background, 1:foreground",
     )
-    parser.add_argument("--box_prompt", type=str, default="[[0,0,0,0]]", help="[[x,y,w,h],[x2,y2,w2,h2]] support multiple boxes")
+    parser.add_argument("--box_prompt", type=str, default="[[0,0,0,0]]",
+                        help="[[x,y,w,h],[x2,y2,w2,h2]] support multiple boxes")
     parser.add_argument(
         "--better_quality",
         type=str,
@@ -85,27 +86,30 @@ def main(args):
     if img_path.exists() and img_path.is_file():
         img_paths.append(img_path)
     else:
-        img_paths.extend(img_path.glob("*.jpg"))
-        img_paths.extend(img_path.glob("*.png"))
-        img_paths.extend(img_path.glob("*.bmp"))
+        img_formats = ["*.jpg", "*.png", "*.bmp"]
+        for img_format in img_formats:
+            img_paths.extend(img_path.glob(img_format))
+
     for img_path in img_paths:
-        input = Image.open(img_path)
-        input = input.convert("RGB")
+        input_image = Image.open(img_path)
+        input_image = input_image.convert("RGB")
+        input_image = input_image.resize((args.imgsz, args.imgsz))
+
         everything_results = model(
-            input,
+            input_image,
             device=args.device,
             retina_masks=args.retina,
             imgsz=args.imgsz,
             conf=args.conf,
             iou=args.iou
-            )
+        )
         bboxes = None
         points = None
         point_label = None
-        prompt_process = FastSAMPrompt(input, everything_results, device=args.device)
+        prompt_process = FastSAMPrompt(input_image, everything_results, device=args.device)
         if args.box_prompt[0][2] != 0 and args.box_prompt[0][3] != 0:
-                ann = prompt_process.box_prompt(bboxes=args.box_prompt)
-                bboxes = args.box_prompt
+            ann = prompt_process.box_prompt(bboxes=args.box_prompt)
+            bboxes = args.box_prompt
         elif args.text_prompt != None:
             ann = prompt_process.text_prompt(text=args.text_prompt)
         elif args.point_prompt[0] != [0, 0]:
@@ -118,15 +122,13 @@ def main(args):
             ann = prompt_process.everything_prompt()
         prompt_process.plot(
             annotations=ann,
-            output_path=args.output+img_path.name,
-            bboxes = bboxes,
-            points = points,
-            point_label = point_label,
+            output_path=args.output + img_path.name,
+            bboxes=bboxes,
+            points=points,
+            point_label=point_label,
             withContours=args.withContours,
             better_quality=args.better_quality,
         )
-
-
 
 
 if __name__ == "__main__":
