@@ -7,3 +7,4 @@ weights
 build/
 *.egg-info/
 gradio_cached_examples
+/output/
