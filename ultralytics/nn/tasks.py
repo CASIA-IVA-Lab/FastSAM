@@ -6,6 +6,7 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
+import pickle
 
 from ultralytics.nn.modules import (AIFI, C1, C2, C3, C3TR, SPP, SPPF, Bottleneck, BottleneckCSP, C2f, C3Ghost, C3x,
                                     Classify, Concat, Conv, Conv2, ConvTranspose, Detect, DWConv, DWConvTranspose2d,
@@ -515,7 +516,7 @@ def torch_safe_load(weight):
     check_suffix(file=weight, suffix='.pt')
     file = attempt_download_asset(weight)  # search online if missing locally
     try:
-        return torch.load(file, map_location='cpu'), file  # load
+        return torch.load(file, map_location='cpu', weights_only=True), file  # load
     except ModuleNotFoundError as e:  # e.name is missing module name
         if e.name == 'models':
             raise TypeError(
@@ -530,7 +531,12 @@ def torch_safe_load(weight):
                        f"run a command with an official YOLOv8 model, i.e. 'yolo predict model=yolov8n.pt'")
         check_requirements(e.name)  # install missing module
 
-        return torch.load(file, map_location='cpu'), file  # load
+        return torch.load(file, map_location='cpu', weights_only=True), file  # load
+    except (pickle.UnpicklingError, RuntimeError) as e:
+        LOGGER.warning(f"WARNING ⚠️ {weight} requires non-safe pickle loading. "
+                       f"Falling back to weights_only=False. "
+                       f"Only load weights from trusted sources.")
+        return torch.load(file, map_location='cpu', weights_only=False), file  # load
 
 
 def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
