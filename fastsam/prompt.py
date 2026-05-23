@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from .utils import image_to_np_ndarray
 from PIL import Image
+import clip
 
 
 class FastSAMPrompt:
@@ -99,7 +100,7 @@ class FastSAMPrompt:
         original_h = image.shape[0]
         original_w = image.shape[1]
         if sys.platform == "darwin":
-            plt.switch_backend("TkAgg")
+            plt.switch_backend("Agg")
         plt.figure(figsize=(original_w / 100, original_h / 100))
         # Add subplot with no margin.
         plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
@@ -169,13 +170,13 @@ class FastSAMPrompt:
         plt.draw()
 
         try:
-            buf = fig.canvas.tostring_rgb()
+            buf = fig.canvas.buffer_rgba()
         except AttributeError:
             fig.canvas.draw()
-            buf = fig.canvas.tostring_rgb()
+            buf = fig.canvas.buffer_rgba()
         cols, rows = fig.canvas.get_width_height()
-        img_array = np.frombuffer(buf, dtype=np.uint8).reshape(rows, cols, 3)
-        result = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+        img_array = np.frombuffer(buf, dtype=np.uint8).reshape(rows, cols, 4)
+        result = cv2.cvtColor(img_array, cv2.COLOR_RGBA2BGR)
         plt.close()
         return result
             
