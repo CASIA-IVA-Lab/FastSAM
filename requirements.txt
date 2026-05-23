@@ -17,3 +17,6 @@ gradio==3.35.2
 # Ultralytics-----------------------------------
 # ultralytics == 8.0.120
 
+psutil
+# NOTE: openai-clip must be installed separately:
+# pip install git+https://github.com/openai/CLIP.git
