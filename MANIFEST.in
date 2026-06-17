@@ -1,0 +1,3 @@
+recursive-include ultralytics *.yaml
+recursive-include ultralytics *.txt
+recursive-include ultralytics *.json
